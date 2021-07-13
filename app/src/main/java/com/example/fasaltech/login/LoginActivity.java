@@ -1,4 +1,4 @@
-package com.example.fasaltech;
+package com.example.fasaltech.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,6 +16,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.fasaltech.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,7 +42,6 @@ public class LoginActivity extends AppCompatActivity {
         queue= Volley.newRequestQueue(this);
         Intent intent=getIntent();
         phone_number=intent.getStringExtra("phone_number");
-
         passwordEditText=findViewById(R.id.passwordEditText);
         repasswordEditText=findViewById(R.id.repasswordEditText);
         password=passwordEditText.getText().toString();
@@ -72,7 +72,6 @@ public class LoginActivity extends AppCompatActivity {
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-
                             }
                         },
                         new Response.ErrorListener() {

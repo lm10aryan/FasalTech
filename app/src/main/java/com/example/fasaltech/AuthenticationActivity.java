@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,10 +31,12 @@ import java.util.concurrent.TimeUnit;
 public class AuthenticationActivity extends AppCompatActivity {
     String phone_number="";
     private FirebaseAuth mAuth;
-    Button button;
+    Button btnVerifyOtp;
+    Button btnSendOtp;
+    EditText otpEditText;
     String verificationCodeBySystem;
 
-    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
+    public PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,22 +45,29 @@ public class AuthenticationActivity extends AppCompatActivity {
         Intent intent=getIntent();
         mAuth = FirebaseAuth.getInstance();
         phone_number=intent.getStringExtra("phone_number");
-        button=findViewById(R.id.button3);
+        btnVerifyOtp=findViewById(R.id.button3);
+        btnSendOtp=findViewById(R.id.button4);
+        otpEditText=findViewById(R.id.otpEditText);
 
+        btnSendOtp.setOnClickListener(v -> {
+            sendVerificationCodeToUser(phone_number);
+        });
         mCallbacks=new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onCodeSent(@NonNull @NotNull String s, @NonNull @NotNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                 super.onCodeSent(s, forceResendingToken);
+                Log.i("Code by System",s);
                 verificationCodeBySystem=s;
             }
 
             @Override
             public void onVerificationCompleted(@NonNull @NotNull PhoneAuthCredential phoneAuthCredential) {
                 String code=phoneAuthCredential.getSmsCode();
-                verifyCode("223394");
-                //if(code!=null){
-                  //  verifyCode(code);
-                //}
+                Log.i("Code Retreived",code);
+
+                if(code!=null){
+                    verifyCode(code);
+                }
 
             }
 
@@ -67,19 +77,24 @@ public class AuthenticationActivity extends AppCompatActivity {
 
             }
         };
-        button.setOnClickListener(new View.OnClickListener() {
+        btnVerifyOtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    sendVerificationCodeToUser(phone_number);
+                    Log.i("Call Verification","Done");
+                    PhoneAuthCredential phoneAuthCredential=PhoneAuthProvider.getCredential(verificationCodeBySystem,otpEditText.getText().toString().trim());
+                    signInByCredential(phoneAuthCredential);
+
 
                 }catch (Exception e){
+                    Log.i("Call Verification","Not Done");
                     Log.i("Error",e.getLocalizedMessage());
                 }
             }
         });
     }
     private void sendVerificationCodeToUser(String phone_number){
+        Log.i("Send Verification ","Done");
         PhoneAuthOptions options =
                 PhoneAuthOptions.newBuilder(mAuth)
                         .setPhoneNumber("+91 "+phone_number)       // Phone number to verify
@@ -90,6 +105,7 @@ public class AuthenticationActivity extends AppCompatActivity {
         PhoneAuthProvider.verifyPhoneNumber(options);
     }
     private void verifyCode(String codeByUser){
+        Log.i("Veryfy Code Method","Called");
         PhoneAuthCredential phoneAuthCredential=PhoneAuthProvider.getCredential(verificationCodeBySystem,codeByUser);
         signInByCredential(phoneAuthCredential);
     }
