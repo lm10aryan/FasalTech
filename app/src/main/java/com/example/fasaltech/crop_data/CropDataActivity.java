@@ -1,4 +1,4 @@
-package com.example.fasaltech.soil_data;
+package com.example.fasaltech.crop_data;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -10,13 +10,14 @@ import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.example.fasaltech.R;
 import com.example.fasaltech.VolleySingleton;
 import com.example.fasaltech.model.SoilDataModel;
+import com.example.fasaltech.soil_data.ClickListener;
+import com.example.fasaltech.soil_data.MySoilAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,55 +27,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SoilDataActivity extends AppCompatActivity implements ClickListener {
+public class CropDataActivity extends AppCompatActivity implements CropClickListener{
     RecyclerView recyclerView;
-    MySoilAdapter mySoilAdapter;
+    MyCropAdapter myCropAdapter;
     VolleySingleton volleySingleton;
     String token="74db454e1cf94292d815cd771ebd878df0c7c46e";
-    final String field_data_url ="http://ec2-52-66-244-191.ap-south-1.compute.amazonaws.com:8000/intro-data/1/1/";
-    ArrayList<SoilDataModel> soilarrayList=new ArrayList<>();
+    final String field_data_url ="http://ec2-52-66-244-191.ap-south-1.compute.amazonaws.com:8000/intro-data/2/1/";
+    ArrayList<CropDataModel> croparraylist=new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_soil_data);
+        setContentView(R.layout.activity_crop_data);
         Intent intent=getIntent();
         volleySingleton= VolleySingleton.getInstance(this);
-        recyclerView=findViewById(R.id.recyclerView);
+        recyclerView=findViewById(R.id.recyclerView1);
         GridLayoutManager gridLayoutManager=new GridLayoutManager(this,2);
         recyclerView.setLayoutManager(gridLayoutManager);
-        //recyclerView.setLayoutManager();
-        mySoilAdapter=new MySoilAdapter(soilarrayList,this);
-        recyclerView.setAdapter(mySoilAdapter);
-        getSoilInfo();
+        myCropAdapter=new MyCropAdapter(croparraylist,this);
+        recyclerView.setAdapter(myCropAdapter);
 
+        getCropInfo();
 
     }
-    public ArrayList<SoilDataModel> getSoilData(){
-        ArrayList<SoilDataModel> holder=new ArrayList<>();
-
-        SoilDataModel model=new SoilDataModel();
-        model.setHeader("Python");
-        model.setDesc("Computer Language");
-        model.setId(1);
-        //model.setImg(R.drawable.ic_launcher_foreground);
-        holder.add(model);
-
-        SoilDataModel model1=new SoilDataModel();
-        model1.setHeader("Ruby");
-        model1.setDesc("Programming Language");
-        model1.setId(4);
-        //model1.setImg(R.drawable.ic_launcher_background);
-        holder.add(model1);
-
-        SoilDataModel model3=new SoilDataModel();
-        model3.setHeader("Java");
-        model3.setDesc("Object Oriented Language");
-        model3.setId(5);
-       // model3.setImg(R.drawable.ic_launcher_background);
-        holder.add(model3);
-        return holder;
-    }
-    public void getSoilInfo(){
+    public void getCropInfo(){
         JsonArrayRequest arrayRequest=new JsonArrayRequest(
                 Request.Method.GET,
                 field_data_url,
@@ -89,14 +64,14 @@ public class SoilDataActivity extends AppCompatActivity implements ClickListener
                             for (int i=0;i<response.length();i++){
                                 JSONObject jsonObject=response.getJSONObject(i);
 
-                                SoilDataModel model=new SoilDataModel();
-                                model.setHeader(jsonObject.getString("soil_type"));
-                                model.setDesc("Computer Language");
-                                model.setId(jsonObject.getInt("soil_id"));
-                                soilarrayList.add(model);
+                                CropDataModel model=new CropDataModel();
+                                model.setHeader(jsonObject.getString("crop_name"));
+                                model.setDesc("Lalala");
+                                model.setId(jsonObject.getInt("crop_id"));
+                                croparraylist.add(model);
                             }
 
-                            mySoilAdapter.notifyDataSetChanged();
+                            myCropAdapter.notifyDataSetChanged();
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -124,8 +99,7 @@ public class SoilDataActivity extends AppCompatActivity implements ClickListener
     }
 
     @Override
-    public void onClick(SoilDataModel soilDataModel) {
-        Log.i("Clicked this",soilDataModel.getHeader());
+    public void onClick(CropDataModel cropDataModel) {
+        Log.i("Clicked this",cropDataModel.getHeader());
     }
-
 }

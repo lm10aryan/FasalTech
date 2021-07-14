@@ -16,6 +16,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.fasaltech.crop_data.CropDataActivity;
+import com.example.fasaltech.seed_data.SeedDataActivity;
 import com.example.fasaltech.soil_data.SoilDataActivity;
 
 import org.json.JSONException;
@@ -109,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     public void sendToNextPage(){
-        Intent intent=new Intent(MainActivity.this, SoilDataActivity.class);
+        Intent intent=new Intent(MainActivity.this, SeedDataActivity.class);
         intent.putExtra("token","74db454e1cf94292d815cd771ebd878df0c7c46e");
         startActivity(intent);
     }
