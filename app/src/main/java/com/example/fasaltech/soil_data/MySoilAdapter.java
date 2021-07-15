@@ -58,9 +58,7 @@ public class MySoilAdapter extends RecyclerView.Adapter<MySoilViewHolder> {
                 }
             }
         });
-
     }
-
     @Override
     public int getItemCount() {
         return data.size();

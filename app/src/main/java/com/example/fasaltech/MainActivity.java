@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     public void sendToNextPage(){
-        Intent intent=new Intent(MainActivity.this, SeedDataActivity.class);
+        Intent intent=new Intent(MainActivity.this, WatermelonQuestionsActivity.class);
         intent.putExtra("token","74db454e1cf94292d815cd771ebd878df0c7c46e");
         startActivity(intent);
     }

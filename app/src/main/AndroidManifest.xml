@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.NoActionBar">
-        <activity android:name=".seed_data.SeedDataActivity"></activity>
+        <activity android:name=".WatermelonQuestionsActivity"></activity>
+        <activity android:name=".seed_data.SeedDataActivity" />
         <activity android:name=".crop_data.CropDataActivity" />
         <activity android:name=".soil_data.SoilDataActivity" />
         <activity android:name=".FieldDetailsActivity" />
