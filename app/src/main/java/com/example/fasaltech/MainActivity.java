@@ -16,9 +16,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.fasaltech.crop_data.CropDataActivity;
-import com.example.fasaltech.seed_data.SeedDataActivity;
-import com.example.fasaltech.soil_data.SoilDataActivity;
+import com.example.fasaltech.watermelon.WatermelonQuestionsActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;

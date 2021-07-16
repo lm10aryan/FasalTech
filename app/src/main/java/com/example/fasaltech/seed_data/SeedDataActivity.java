@@ -26,28 +26,30 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SeedDataActivity extends AppCompatActivity implements SeedClickListener{
+public class SeedDataActivity extends AppCompatActivity implements SeedClickListener {
     RecyclerView recyclerView;
     MySeedAdapter mySeedAdapter;
     VolleySingleton volleySingleton;
-    String token="74db454e1cf94292d815cd771ebd878df0c7c46e";
-    final String field_data_url ="http://ec2-52-66-244-191.ap-south-1.compute.amazonaws.com:8000/intro-data/3/1/";
-    ArrayList<SeedDataModel> seedarraylist=new ArrayList<>();
+    String token = "74db454e1cf94292d815cd771ebd878df0c7c46e";
+    final String field_data_url = "http://ec2-52-66-244-191.ap-south-1.compute.amazonaws.com:8000/intro-data/3/1/";
+    ArrayList<SeedDataModel> seedarraylist = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seed_data);
-        Intent intent=getIntent();
-        volleySingleton= VolleySingleton.getInstance(this);
-        recyclerView=findViewById(R.id.seedRecyclerView);
-        GridLayoutManager gridLayoutManager=new GridLayoutManager(this,2);
+        Intent intent = getIntent();
+        volleySingleton = VolleySingleton.getInstance(this);
+        recyclerView = findViewById(R.id.seedRecyclerView);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(gridLayoutManager);
-        mySeedAdapter=new MySeedAdapter(seedarraylist,this);
+        mySeedAdapter = new MySeedAdapter(seedarraylist, this);
         recyclerView.setAdapter(mySeedAdapter);
         getSeedInfo();
     }
-    public void getSeedInfo(){
-        JsonArrayRequest arrayRequest=new JsonArrayRequest(
+
+    public void getSeedInfo() {
+        JsonArrayRequest arrayRequest = new JsonArrayRequest(
                 Request.Method.GET,
                 field_data_url,
                 null,
@@ -55,12 +57,12 @@ public class SeedDataActivity extends AppCompatActivity implements SeedClickList
                     @Override
                     public void onResponse(JSONArray response) {
                         try {
-                            Log.i("Response",response.toString());
+                            Log.i("Response", response.toString());
                             //JSONObject jsonObject=response.getJSONObject(0);
-                            for (int i=0;i<response.length();i++){
-                                JSONObject jsonObject=response.getJSONObject(i);
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject jsonObject = response.getJSONObject(i);
 
-                                SeedDataModel model=new SeedDataModel();
+                                SeedDataModel model = new SeedDataModel();
                                 model.setHeader(jsonObject.getString("seed_name"));
                                 model.setDesc("Lalala");
                                 model.setId(jsonObject.getInt("seed_id"));
@@ -81,12 +83,12 @@ public class SeedDataActivity extends AppCompatActivity implements SeedClickList
 
                     }
                 }
-        ){
+        ) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json");
-                headers.put("Authorization", "Token "+token);
+                headers.put("Authorization", "Token " + token);
                 return headers;
             }
         };
@@ -96,6 +98,6 @@ public class SeedDataActivity extends AppCompatActivity implements SeedClickList
 
     @Override
     public void onClick(SeedDataModel seedDataModel) {
-        Log.i("Clicked this",seedDataModel.getHeader());
+        Log.i("Clicked this", seedDataModel.getHeader());
     }
 }
