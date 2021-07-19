@@ -2,8 +2,9 @@ package com.example.fasaltech.model;
 
 public class ChildOptions {
 
-   private int choiceId;
-   private String choice;
+    private int choiceId;
+    private String choice;
+    private boolean isSelected = false;
 
     public ChildOptions(int choiceId, String choice) {
         this.choiceId = choiceId;
@@ -24,5 +25,13 @@ public class ChildOptions {
 
     public void setChoice(String choice) {
         this.choice = choice;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 }

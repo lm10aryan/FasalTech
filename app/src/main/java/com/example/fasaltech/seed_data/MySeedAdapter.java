@@ -24,8 +24,8 @@ import java.util.ArrayList;
 public class MySeedAdapter extends RecyclerView.Adapter<MySeedViewHolder> {
     ArrayList<SeedDataModel> data;
     SeedClickListener seedClickListener;
-    int number=0;
-    int getPosition=-1;
+    int number = 0;
+    int getPosition = -1;
     private int selected_position = -1;
 
     public MySeedAdapter(ArrayList<SeedDataModel> data, SeedClickListener seedClickListener) {
@@ -37,29 +37,29 @@ public class MySeedAdapter extends RecyclerView.Adapter<MySeedViewHolder> {
     @NotNull
     @Override
     public MySeedViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-        LayoutInflater layoutInflater=LayoutInflater.from(parent.getContext());
-        View view=layoutInflater.inflate(R.layout.single_soil_row,parent,false);
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        View view = layoutInflater.inflate(R.layout.single_soil_row, parent, false);
         return new MySeedViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull MySeedViewHolder holder, int position) {
-        final SeedDataModel temp=data.get(position);
+        final SeedDataModel temp = data.get(position);
         holder.t1.setText(data.get(position).getHeader());
         holder.t2.setText(data.get(position).getDesc());
-        Glide.with(holder.img.getContext()).load(Api.seedDataUrl+temp.getId()+"/").into(holder.img);
+        Glide.with(holder.img.getContext()).load(Api.seedDataUrl + temp.getId() + "/").into(holder.img);
 
         if (selected_position == position) {
             holder.materialCardView.setChecked(true);
-        }else {
+        } else {
             holder.materialCardView.setChecked(false);
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if(selected_position==position){
-                    selected_position=-1;
+                if (selected_position == position) {
+                    selected_position = -1;
                     notifyDataSetChanged();
                     return;
                 }

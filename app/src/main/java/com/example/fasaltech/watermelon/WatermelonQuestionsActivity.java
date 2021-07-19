@@ -32,13 +32,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class WatermelonQuestionsActivity extends AppCompatActivity implements WatermelonMainClickListener{
+public class WatermelonQuestionsActivity extends AppCompatActivity implements WatermelonMainClickListener {
     VolleySingleton volleySingleton;
     String token = "74db454e1cf94292d815cd771ebd878df0c7c46e";
     String melonUrl = "http://ec2-52-66-244-191.ap-south-1.compute.amazonaws.com:8000/dumm/";
     RecyclerView rvParent;
     int subq_id;
     int subc_id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +61,7 @@ public class WatermelonQuestionsActivity extends AppCompatActivity implements Wa
                     @Override
                     public void onResponse(JSONObject response) {
                         pd.dismiss();
-                        // Log.i("Response", response.toString());
+                        //Log.i("Response", response.toString());
                         try {
                             List<ParentQuestion> questionList = new ArrayList<>();
                             JSONArray jsonArray = response.getJSONArray("question");
@@ -70,23 +71,22 @@ public class WatermelonQuestionsActivity extends AppCompatActivity implements Wa
                                 String question = objQuestion.getString("question_text");
                                 int qId = objQuestion.getInt("q_id");
                                 int mcId = objQuestion.getInt("mc_id");
-                                if(qId==6)continue;
-                                if(objQuestion.isNull("sub_id"))
-                                {
-                                     subq_id=0;
-                                     subc_id=0;
+                                if (qId == 6) continue;
+                                if (objQuestion.isNull("sub_id")) {
+                                    subq_id = 0;
+                                    subc_id = 0;
 
-                                }else {
-                                     subq_id=objQuestion.getInt("sub_id");
-                                     subc_id=objQuestion.getInt("sub_choice");
+                                } else {
+                                    subq_id = objQuestion.getInt("sub_id");
+                                    subc_id = objQuestion.getInt("sub_choice");
                                 }
                                 List<ChildOptions> choiceList = new ArrayList<>();
                                 JSONArray arrayArr = objQuestion.getJSONArray("choiceAnswers");
                                 //Log.i("value",arrayArr.toString());
-                                if (arrayArr.isNull(0)){
-                                    choiceList.add(new ChildOptions(100,"Haha"));
+                                if (arrayArr.isNull(0)) {
+                                    choiceList.add(new ChildOptions(100, "Haha"));
                                     //Log.i("found it","Done");
-                                    questionList.add(new ParentQuestion(qId, mcId, question, choiceList,subq_id,subc_id));
+                                    questionList.add(new ParentQuestion(qId, mcId, question, choiceList, subq_id, subc_id, false));
                                     continue;
                                 }
                                 JSONArray arrayChoice = arrayArr.getJSONArray(0);
@@ -95,11 +95,11 @@ public class WatermelonQuestionsActivity extends AppCompatActivity implements Wa
                                     choiceList.add(new ChildOptions(objChoice.getInt("choice_id"), objChoice.getString("choice")));
                                 }
 
-                                questionList.add(new ParentQuestion(qId, mcId, question, choiceList,subq_id,subc_id));
+                                questionList.add(new ParentQuestion(qId, mcId, question, choiceList, subq_id, subc_id, true));
 
                             }
-                           // Log.i("Count",String.valueOf(questionList.size()));
-                            ParentAdapter parentAdapter = new ParentAdapter(questionList,(WatermelonQuestionsActivity.this::onClick));
+                            // Log.i("Count",String.valueOf(questionList.size()));
+                            ParentAdapter parentAdapter = new ParentAdapter(questionList, (WatermelonQuestionsActivity.this::onClick));
                             rvParent.setAdapter(parentAdapter);
 
                         } catch (JSONException e) {
@@ -130,6 +130,6 @@ public class WatermelonQuestionsActivity extends AppCompatActivity implements Wa
 
     @Override
     public void onClick(ParentQuestion parentQuestion) {
-        Log.i("Clicked bitch",parentQuestion.getQuestionText());
+        Log.i("Clicked bitch", parentQuestion.getQuestionText());
     }
 }
