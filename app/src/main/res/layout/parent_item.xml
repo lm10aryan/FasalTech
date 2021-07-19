@@ -6,6 +6,8 @@
 
     <TextView
         android:id="@+id/tvQuestion"
+        android:textStyle="bold"
+        android:textSize="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

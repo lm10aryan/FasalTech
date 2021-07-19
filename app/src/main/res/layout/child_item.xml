@@ -1,13 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/watermelonquestionradioButton"/>
     <TextView
         android:id="@+id/tvChild"
         android:layout_marginStart="10dp"
-        android:layout_width="wrap_content"
+        android:textSize="20dp"
+        android:layout_toRightOf="@+id/watermelonquestionradioButton"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_below="@+id/watermelonquestionradioButton"
+        android:id="@+id/choiceEditText"/>
 
-</LinearLayout>
+</RelativeLayout>
