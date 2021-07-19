@@ -27,7 +27,6 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentView
     ChildAdapter childAdapter;
 
     ArrayList<Integer> childArrayList = new ArrayList<>();
-    ArrayList<ParentQuestion> subParentQuestion = new ArrayList<>();
     LinearLayoutManager layoutManager;
 
 
