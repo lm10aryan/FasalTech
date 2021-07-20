@@ -60,14 +60,6 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
                     }
                     clickListener.onClick(childOption);
                     notifyDataSetChanged();
-                   /* if (selected_position == position) {
-                        selected_position = -1;
-                        notifyDataSetChanged();
-                        return;
-                    }
-                    clickListener.onClick(childOption);
-                    selected_position = position;
-                    notifyDataSetChanged();*/
                 }
             });
         }

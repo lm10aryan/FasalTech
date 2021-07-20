@@ -64,8 +64,9 @@ public class WatermelonQuestionsActivity extends AppCompatActivity implements Wa
                         //Log.i("Response", response.toString());
                         try {
                             List<ParentQuestion> questionList = new ArrayList<>();
+                            List<ParentQuestion> subQuestionList = new ArrayList<>();
                             JSONArray jsonArray = response.getJSONArray("question");
-                            //Log.i("Response",response.toString());
+                            Log.i("Response", response.toString());
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject objQuestion = jsonArray.getJSONObject(i);
                                 String question = objQuestion.getString("question_text");
@@ -86,7 +87,8 @@ public class WatermelonQuestionsActivity extends AppCompatActivity implements Wa
                                 if (arrayArr.isNull(0)) {
                                     choiceList.add(new ChildOptions(100, "Haha"));
                                     //Log.i("found it","Done");
-                                    questionList.add(new ParentQuestion(qId, mcId, question, choiceList, subq_id, subc_id, false));
+                                    //questionList.add(new ParentQuestion(qId, mcId, question, choiceList, subq_id, subc_id, false));
+                                    subQuestionList.add(new ParentQuestion(qId, mcId, question, choiceList, subq_id, subc_id));
                                     continue;
                                 }
                                 JSONArray arrayChoice = arrayArr.getJSONArray(0);
@@ -95,11 +97,10 @@ public class WatermelonQuestionsActivity extends AppCompatActivity implements Wa
                                     choiceList.add(new ChildOptions(objChoice.getInt("choice_id"), objChoice.getString("choice")));
                                 }
 
-                                questionList.add(new ParentQuestion(qId, mcId, question, choiceList, subq_id, subc_id, true));
-
+                                questionList.add(new ParentQuestion(qId, mcId, question, choiceList, subq_id, subc_id));
                             }
                             // Log.i("Count",String.valueOf(questionList.size()));
-                            ParentAdapter parentAdapter = new ParentAdapter(questionList, (WatermelonQuestionsActivity.this::onClick));
+                            ParentAdapter parentAdapter = new ParentAdapter(questionList, subQuestionList, (WatermelonQuestionsActivity.this::onClick));
                             rvParent.setAdapter(parentAdapter);
 
                         } catch (JSONException e) {

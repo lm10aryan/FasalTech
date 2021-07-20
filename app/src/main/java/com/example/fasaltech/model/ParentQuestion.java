@@ -9,17 +9,15 @@ public class ParentQuestion {
     private List<ChildOptions> childOptions;
     private int subq_id;
     private int subc_id;
-    private boolean isShow = true;
 
 
-    public ParentQuestion(int QId, int mcId, String questionText, List<ChildOptions> childOptions, int subq_id, int subc_id,boolean isShow) {
+    public ParentQuestion(int QId, int mcId, String questionText, List<ChildOptions> childOptions, int subq_id, int subc_id) {
         this.QId = QId;
         this.mcId = mcId;
         this.questionText = questionText;
         this.childOptions = childOptions;
         this.subq_id = subq_id;
         this.subc_id = subc_id;
-        this.isShow = isShow;
     }
 
     public int getSubq_id() {
@@ -70,11 +68,4 @@ public class ParentQuestion {
         this.childOptions = childOptions;
     }
 
-    public boolean isShow() {
-        return isShow;
-    }
-
-    public void setShow(boolean show) {
-        isShow = show;
-    }
 }

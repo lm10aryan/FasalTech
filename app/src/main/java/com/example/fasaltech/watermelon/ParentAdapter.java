@@ -19,28 +19,19 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentViewHolder> implements WatermelonQuestionClickListener {
+public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentViewHolder> {
 
-    private final RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
     private final List<ParentQuestion> parentList;
     WatermelonMainClickListener watermelonMainClickListener;
-    ChildAdapter childAdapter;
+    private final List<ParentQuestion> subQuestionList;
+    int preQuestionId = -1;
+    int preChoiceId = -1;
 
-    ArrayList<Integer> childArrayList = new ArrayList<>();
-    LinearLayoutManager layoutManager;
-
-
-    public ParentAdapter(List<ParentQuestion> parentList, WatermelonMainClickListener watermelonMainClickListener) {
+    public ParentAdapter(List<ParentQuestion> parentList, List<ParentQuestion> subQuestionList, WatermelonMainClickListener watermelonMainClickListener) {
         this.parentList = parentList;
         this.watermelonMainClickListener = watermelonMainClickListener;
+        this.subQuestionList = subQuestionList;
     }
-    /*ChildAdapter childAdapter;
-    ArrayList<Integer>childArrayList=new ArrayList<>();
-    LinearLayoutManager layoutManager;
-
-    public ParentAdapter(List<ParentQuestion> parentList) {
-        this.parentList = parentList;
-    }*/
 
     @NonNull
     @NotNull
@@ -50,44 +41,49 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentView
         return new ParentViewHolder(view);
     }
 
+   private boolean flag = false;
+
     @Override
     public void onBindViewHolder(@NonNull @NotNull ParentViewHolder parentViewHolder, int position) {
-
         ParentQuestion parentQuestion = parentList.get(position);
-        if (parentQuestion.isShow()) {
-            parentViewHolder.parentQuestion.setText(parentQuestion.getQuestionText());
-            childAdapter = new ChildAdapter(parentQuestion.getChildOptions(), this);
-            layoutManager = new LinearLayoutManager(parentViewHolder
-                    .rvChild
-                    .getContext(),
-                    LinearLayoutManager.VERTICAL,
-                    false);
-            layoutManager.setInitialPrefetchItemCount(parentQuestion.getChildOptions().size());
-            parentViewHolder.rvChild.setLayoutManager(layoutManager);
-            parentViewHolder.rvChild.setAdapter(childAdapter);
-            parentViewHolder.rvChild.setRecycledViewPool(viewPool);
-        }
-
-       /* if (!childArrayList.isEmpty()) {
-            Log.i("being", "gone");
-            for (int i = 0; i < childArrayList.size(); i++) {
-                if (parentQuestion.getSubc_id() == childArrayList.get(i)) {
-                    parentViewHolder.parentQuestion.setText(parentQuestion.getQuestionText());
-                    childAdapter = new ChildAdapter(parentQuestion.getChildOptions(), this);
-                    layoutManager = new LinearLayoutManager(parentViewHolder
-                            .rvChild
-                            .getContext(),
-                            LinearLayoutManager.VERTICAL,
-                            false);
-                    layoutManager.setInitialPrefetchItemCount(parentQuestion.getChildOptions().size());
-
-                    parentViewHolder.rvChild.setLayoutManager(layoutManager);
-                    parentViewHolder.rvChild.setAdapter(childAdapter);
-                    parentViewHolder.rvChild.setRecycledViewPool(viewPool);
+        parentViewHolder.parentQuestion.setText(parentQuestion.getQuestionText());
+        ChildAdapter childAdapter = new ChildAdapter(parentQuestion.getChildOptions(), childOptions -> {
+            if (preQuestionId == -1) {
+                preQuestionId = parentQuestion.getQId();
+                preChoiceId = childOptions.getChoiceId();
+            }
+            if (flag) {
+                if (preQuestionId == parentQuestion.getQId() && preChoiceId == childOptions.getChoiceId() && !childOptions.isSelected()) {
+                    for (int i = 0; i < subQuestionList.size(); i++) {
+                        if (subQuestionList.get(i).getSubc_id() == childOptions.getChoiceId()) {
+                            parentList.remove(subQuestionList.get(i));
+                        }
+                    }
+                    notifyDataSetChanged();
+                    return;
+                }
+                if (preQuestionId == parentQuestion.getQId() && preChoiceId != childOptions.getChoiceId()) {
+                    for (int i = 0; i < subQuestionList.size(); i++) {
+                        if (subQuestionList.get(i).getSubc_id() == preChoiceId) {
+                            parentList.remove(subQuestionList.get(i));
+                        }
+                    }
+                }
+                preQuestionId = parentQuestion.getQId();
+                preChoiceId = childOptions.getChoiceId();
+            }
+            flag = true;
+            for (int i = 0; i < subQuestionList.size(); i++) {
+                if (subQuestionList.get(i).getSubc_id() == childOptions.getChoiceId()) {
+                    parentList.add(subQuestionList.get(i));
                 }
             }
-        }
-*/
+            notifyDataSetChanged();
+        });
+        LinearLayoutManager layoutManager = new LinearLayoutManager(parentViewHolder.rvChild.getContext());
+        layoutManager.setInitialPrefetchItemCount(parentQuestion.getChildOptions().size());
+        parentViewHolder.rvChild.setLayoutManager(layoutManager);
+        parentViewHolder.rvChild.setAdapter(childAdapter);
         parentViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,32 +98,6 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentView
     @Override
     public int getItemCount() {
         return parentList.size();
-    }
-
-    @Override
-    public void onClick(ChildOptions childOptions) {
-        Log.i("Clicked this", String.valueOf(childOptions.getChoiceId()));
-        int choice_clicked = childOptions.getChoiceId();
-        for (int i = 0; i < parentList.size(); i++) {
-            if (parentList.get(i).getSubc_id() == choice_clicked) {
-                parentList.get(i).setShow(true);
-            }
-        }
-        notifyDataSetChanged();
-       /* childArrayList.add(childOptions.getChoiceId());
-        for (int i = 0; i < parentList.size(); i++) {
-            ParentQuestion question_set = parentList.get(i);
-            List<ChildOptions> childOptions1 = question_set.getChildOptions();
-            for (int j = 0; j < childOptions1.size(); j++) {
-                if (childOptions1.get(j).getChoiceId() == choice_clicked) {
-                    Log.i("Parent value", question_set.getQuestionText());
-                }
-            }
-        }*/
-        //Log.i("Parent valye", parentList.get(i).getQuestionText());
-        //Log.i("Child list",childArrayList.toString());
-        //notifyDataSetChanged();
-        //run function to check if clicked twice. we dont want same number...
     }
 
 
