@@ -24,8 +24,6 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentView
     private final List<ParentQuestion> parentList;
     WatermelonMainClickListener watermelonMainClickListener;
     private final List<ParentQuestion> subQuestionList;
-    int preQuestionId = -1;
-    int preChoiceId = -1;
 
     public ParentAdapter(List<ParentQuestion> parentList, List<ParentQuestion> subQuestionList, WatermelonMainClickListener watermelonMainClickListener) {
         this.parentList = parentList;
@@ -41,38 +39,28 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentView
         return new ParentViewHolder(view);
     }
 
-   private boolean flag = false;
-
     @Override
     public void onBindViewHolder(@NonNull @NotNull ParentViewHolder parentViewHolder, int position) {
         ParentQuestion parentQuestion = parentList.get(position);
         parentViewHolder.parentQuestion.setText(parentQuestion.getQuestionText());
-        ChildAdapter childAdapter = new ChildAdapter(parentQuestion.getChildOptions(), childOptions -> {
-            if (preQuestionId == -1) {
-                preQuestionId = parentQuestion.getQId();
-                preChoiceId = childOptions.getChoiceId();
-            }
-            if (flag) {
-                if (preQuestionId == parentQuestion.getQId() && preChoiceId == childOptions.getChoiceId() && !childOptions.isSelected()) {
-                    for (int i = 0; i < subQuestionList.size(); i++) {
-                        if (subQuestionList.get(i).getSubc_id() == childOptions.getChoiceId()) {
-                            parentList.remove(subQuestionList.get(i));
-                        }
-                    }
-                    notifyDataSetChanged();
-                    return;
-                }
-                if (preQuestionId == parentQuestion.getQId() && preChoiceId != childOptions.getChoiceId()) {
-                    for (int i = 0; i < subQuestionList.size(); i++) {
-                        if (subQuestionList.get(i).getSubc_id() == preChoiceId) {
-                            parentList.remove(subQuestionList.get(i));
+        ChildAdapter childAdapter = new ChildAdapter(parentQuestion.getChildOptions(), (childOptions, listChildOptions) -> {
+            boolean flg = false;
+            for (int i = 0; i < listChildOptions.size(); i++) {
+                if (!listChildOptions.get(i).isSelected()) {
+                    for (int j = 0; j < parentList.size(); j++) {
+                        if (listChildOptions.get(i).getChoiceId() == parentList.get(j).getSubc_id()) {
+                            parentList.remove(parentList.get(j));
+                            j--;
+                            flg = true;
                         }
                     }
                 }
-                preQuestionId = parentQuestion.getQId();
-                preChoiceId = childOptions.getChoiceId();
             }
-            flag = true;
+            if (flg){
+                notifyDataSetChanged();
+                return;
+            }
+
             for (int i = 0; i < subQuestionList.size(); i++) {
                 if (subQuestionList.get(i).getSubc_id() == childOptions.getChoiceId()) {
                     parentList.add(subQuestionList.get(i));

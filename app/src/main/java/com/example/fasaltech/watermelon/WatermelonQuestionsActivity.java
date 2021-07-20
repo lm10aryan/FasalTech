@@ -61,7 +61,7 @@ public class WatermelonQuestionsActivity extends AppCompatActivity implements Wa
                     @Override
                     public void onResponse(JSONObject response) {
                         pd.dismiss();
-                        //Log.i("Response", response.toString());
+                        Log.i("Response", response.toString());
                         try {
                             List<ParentQuestion> questionList = new ArrayList<>();
                             List<ParentQuestion> subQuestionList = new ArrayList<>();

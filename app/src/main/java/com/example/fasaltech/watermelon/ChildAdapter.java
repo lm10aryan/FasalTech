@@ -58,7 +58,7 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
                             childOptions.get(i).setSelected(false);
                         }
                     }
-                    clickListener.onClick(childOption);
+                    clickListener.onClick(childOption, childOptions);
                     notifyDataSetChanged();
                 }
             });
