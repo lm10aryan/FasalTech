@@ -1,8 +1,11 @@
 package com.example.fasaltech.watermelon;
 
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +19,7 @@ import com.example.fasaltech.model.ParentQuestion;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentViewHolder> {
@@ -23,6 +27,9 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentView
     private final List<ParentQuestion> parentList;
     WatermelonMainClickListener watermelonMainClickListener;
     private final List<ParentQuestion> subQuestionList;
+
+    List<Integer> answerList=new LinkedList<>();
+
 
     public ParentAdapter(List<ParentQuestion> parentList, List<ParentQuestion> subQuestionList, WatermelonMainClickListener watermelonMainClickListener) {
         this.parentList = parentList;
@@ -59,21 +66,22 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentView
                     parentList.add(subQuestionList.get(i));
                 }
             }
+
+
+            answerList.add(childOptions.getChoiceId());
+           // Log.i("Option Id",answerList.toString());
+           // Log.i("Child clicked",childOptions.getChoice());
+            if (watermelonMainClickListener != null) {
+               // parentQuestion.getChildOptions().clear();
+                watermelonMainClickListener.onClick(parentQuestion);
+            }
+            //Log.i("question clicked",parentQuestion.getQuestionText());
             notifyDataSetChanged();
         });
         LinearLayoutManager layoutManager = new LinearLayoutManager(parentViewHolder.rvChild.getContext());
         layoutManager.setInitialPrefetchItemCount(parentQuestion.getChildOptions().size());
         parentViewHolder.rvChild.setLayoutManager(layoutManager);
         parentViewHolder.rvChild.setAdapter(childAdapter);
-        parentViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (watermelonMainClickListener != null) {
-                    watermelonMainClickListener.onClick(parentQuestion);
-                }
-            }
-        });
-
     }
 
     @Override
@@ -87,10 +95,12 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentView
         private final TextView parentQuestion;
         private final RecyclerView rvChild;
 
+
         public ParentViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             parentQuestion = itemView.findViewById(R.id.tvQuestion);
             rvChild = itemView.findViewById(R.id.rvChild);
+
         }
     }
 }

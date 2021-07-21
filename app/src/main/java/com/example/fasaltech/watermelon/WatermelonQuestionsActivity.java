@@ -29,6 +29,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +40,8 @@ public class WatermelonQuestionsActivity extends AppCompatActivity implements Wa
     RecyclerView rvParent;
     int subq_id;
     int subc_id;
+    List<Integer>parentAskedList=new LinkedList<>();
+    List<Integer>childAskedList=new LinkedList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +134,34 @@ public class WatermelonQuestionsActivity extends AppCompatActivity implements Wa
 
     @Override
     public void onClick(ParentQuestion parentQuestion) {
-        Log.i("Clicked bitch", parentQuestion.getQuestionText());
+        //Log.i("Question clicked user", parentQuestion.getQuestionText());
+        //check if question has been answered already
+        boolean flag=true;
+        for(int j=0;j<parentAskedList.size();j++){
+            if(parentQuestion.getQId()==parentAskedList.get(j)){
+                for(int k=0;k<parentQuestion.getChildOptions().size();k++){
+                    if(parentQuestion.getChildOptions().get(k).isSelected()){
+                        Log.i("Same question","Solved");
+                        childAskedList.set(j,parentQuestion.getChildOptions().get(k).getChoiceId());
+                        flag=false;
+                    }
+                }
+            }
+            else {
+
+            }
+        }
+        //add question id and choice id if the question has not been answered yet
+        if(flag){
+            parentAskedList.add(parentQuestion.getQId());
+            for(int i=0;i<parentQuestion.getChildOptions().size();i++){
+                if(parentQuestion.getChildOptions().get(i).isSelected()){
+                    childAskedList.add(parentQuestion.getChildOptions().get(i).getChoiceId());
+                    //Log.i("Option clicked by user",parentQuestion.getChildOptions().get(i).getChoice());
+                }
+            }
+        }
+        Log.i("Parent List",parentAskedList.toString());
+        Log.i("Child Asked List",childAskedList.toString());
     }
 }
