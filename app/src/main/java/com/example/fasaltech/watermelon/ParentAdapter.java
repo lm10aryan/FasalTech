@@ -1,6 +1,5 @@
 package com.example.fasaltech.watermelon;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,25 +43,19 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentView
         ParentQuestion parentQuestion = parentList.get(position);
         parentViewHolder.parentQuestion.setText(parentQuestion.getQuestionText());
         ChildAdapter childAdapter = new ChildAdapter(parentQuestion.getChildOptions(), (childOptions, listChildOptions) -> {
-            boolean flg = false;
             for (int i = 0; i < listChildOptions.size(); i++) {
                 if (!listChildOptions.get(i).isSelected()) {
                     for (int j = 0; j < parentList.size(); j++) {
                         if (listChildOptions.get(i).getChoiceId() == parentList.get(j).getSubc_id()) {
                             parentList.remove(parentList.get(j));
                             j--;
-                            flg = true;
                         }
                     }
                 }
             }
-            if (flg){
-                notifyDataSetChanged();
-                return;
-            }
 
             for (int i = 0; i < subQuestionList.size(); i++) {
-                if (subQuestionList.get(i).getSubc_id() == childOptions.getChoiceId()) {
+                if (subQuestionList.get(i).getSubc_id() == childOptions.getChoiceId() && childOptions.isSelected()) {
                     parentList.add(subQuestionList.get(i));
                 }
             }
