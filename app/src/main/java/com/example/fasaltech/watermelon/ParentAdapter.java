@@ -28,7 +28,6 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentView
     WatermelonMainClickListener watermelonMainClickListener;
     private final List<ParentQuestion> subQuestionList;
 
-    List<Integer> answerList=new LinkedList<>();
 
 
     public ParentAdapter(List<ParentQuestion> parentList, List<ParentQuestion> subQuestionList, WatermelonMainClickListener watermelonMainClickListener) {
@@ -67,10 +66,7 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentView
                 }
             }
 
-
-            answerList.add(childOptions.getChoiceId());
-           // Log.i("Option Id",answerList.toString());
-           // Log.i("Child clicked",childOptions.getChoice());
+            Log.i("Child clicked",childOptions.getChoice());
             if (watermelonMainClickListener != null) {
                // parentQuestion.getChildOptions().clear();
                 watermelonMainClickListener.onClick(parentQuestion);

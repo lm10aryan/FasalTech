@@ -22,6 +22,7 @@ public class MyCropAdapter extends RecyclerView.Adapter<MyCropViewHolder> {
 
     ArrayList<CropDataModel> data;
     CropClickListener cropClickListener;
+    private int selected_position = -1;
 
     public MyCropAdapter(ArrayList<CropDataModel> data, CropClickListener clickListener) {
         this.data = data;
@@ -42,15 +43,25 @@ public class MyCropAdapter extends RecyclerView.Adapter<MyCropViewHolder> {
         final CropDataModel temp=data.get(position);
         holder.t1.setText(data.get(position).getHeader());
         holder.t2.setText(data.get(position).getDesc());
-       // Glide.with(holder.img.getContext()).load("http://ec2-52-66-244-191.ap-south-1.compute.amazonaws.com:8000/media/crop/watermelon.png").into(holder.img);
+
+
         Glide.with(holder.img.getContext()).load(Api.cropDataUrl+temp.getId()+"/").into(holder.img);
+        if (selected_position == position) {
+            holder.materialCardView.setChecked(true);
+        } else {
+            holder.materialCardView.setChecked(false);
+        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.materialCardView.setChecked(true);
-                if(cropClickListener!=null){
-                    cropClickListener.onClick(temp);
+                if (selected_position == position) {
+                    selected_position = -1;
+                    notifyDataSetChanged();
+                    return;
                 }
+                cropClickListener.onClick(temp);
+                selected_position = position;
+                notifyDataSetChanged();
             }
         });
 

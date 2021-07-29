@@ -3,6 +3,7 @@ package com.example.fasaltech.login;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,7 +17,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.fasaltech.FarmerDetailActivity;
 import com.example.fasaltech.R;
+import com.example.fasaltech.constant.Api;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,8 +31,7 @@ public class LoginActivity extends AppCompatActivity {
     RequestQueue queue ;
     String phone_number="";
     String password="";
-
-    final String url ="http://ec2-52-66-244-191.ap-south-1.compute.amazonaws.com/auth/token/login/";
+    String re_password="";
     String token="";
     EditText passwordEditText;
     EditText repasswordEditText;
@@ -41,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         button=findViewById(R.id.button);
         queue= Volley.newRequestQueue(this);
         Intent intent=getIntent();
+
         phone_number=intent.getStringExtra("phone_number");
         passwordEditText=findViewById(R.id.passwordEditText);
         repasswordEditText=findViewById(R.id.repasswordEditText);
@@ -49,29 +52,26 @@ public class LoginActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                password=passwordEditText.getText().toString();
-
+                UserCompleteLogin();
+                /*password=passwordEditText.getText().toString().trim();
+                re_password=repasswordEditText.getText().toString().trim();
                 final JSONObject object2=new JSONObject();
                 try {
                     object2.put("phone_number",phone_number);
                     object2.put("password",password);
+                    object2.put("re_password",re_password);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(
                         Request.Method.POST,
-                        url,
+                        Api.registerUrl,
                         object2,
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
-                                try {
-                                    token=response.getString("auth_token");
-                                    Log.i("Login", token);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                                UserCompleteLogin();
                             }
                         },
                         new Response.ErrorListener() {
@@ -90,9 +90,65 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                 };
-                queue.add(jsonObjectRequest);
+                queue.add(jsonObjectRequest);   */
             }
         });
+    }
+
+    public void UserCompleteLogin(){
+        password=passwordEditText.getText().toString();
+        final JSONObject object3=new JSONObject();
+        try {
+            object3.put("phone_number","9090909090");
+            object3.put("password",password);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(
+                Request.Method.POST,
+                Api.loginUrl,
+                object3,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Intent intent1=new Intent(LoginActivity.this, FarmerDetailActivity.class);
+                        try {
+                            token = response.getString("auth_token");
+                            intent1.putExtra("token",token);
+                            //addTokenInfo(token);
+                            Log.i("log",token);
+                            startActivity(intent1);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("Error",error.getLocalizedMessage());
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json");
+                params.put("Charset", "UTF-8");
+                return params;
+            }
+
+        };
+        queue.add(jsonObjectRequest);
+    }
+    private void addTokenInfo(String token){
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.fasaltech",MODE_PRIVATE);
+        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+        myEdit.putInt("page_no",3);
+        myEdit.putString("token",token);
+        Log.i("Saved","token at login endpoint");
+        myEdit.commit();
     }
 
 }

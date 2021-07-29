@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -16,7 +18,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.example.fasaltech.R;
 import com.example.fasaltech.VolleySingleton;
+import com.example.fasaltech.crop_data.CropDataActivity;
 import com.example.fasaltech.model.SoilDataModel;
+import com.example.fasaltech.seed_data.SeedDataActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,13 +35,16 @@ public class SoilDataActivity extends AppCompatActivity implements ClickListener
     MySoilAdapter mySoilAdapter;
     VolleySingleton volleySingleton;
     String token="74db454e1cf94292d815cd771ebd878df0c7c46e";
-    final String field_data_url ="http://ec2-52-66-244-191.ap-south-1.compute.amazonaws.com:8000/intro-data/1/1/";
+    final String field_data_url ="http://ec2-13-233-44-214.ap-south-1.compute.amazonaws.com:8000/intro-data/1/1/";
     ArrayList<SoilDataModel> soilarrayList=new ArrayList<>();
+    int crop_id_chosen;
+    int soil;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_soil_data);
         Intent intent=getIntent();
+        crop_id_chosen=intent.getIntExtra("product_name",0);
         volleySingleton= VolleySingleton.getInstance(this);
         recyclerView=findViewById(R.id.recyclerView);
         GridLayoutManager gridLayoutManager=new GridLayoutManager(this,2);
@@ -46,33 +53,19 @@ public class SoilDataActivity extends AppCompatActivity implements ClickListener
         mySoilAdapter=new MySoilAdapter(soilarrayList,this);
         recyclerView.setAdapter(mySoilAdapter);
         getSoilInfo();
+        Button button=findViewById(R.id.buttonToSeedPage);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(soil!=0){
+                    Intent intent1=new Intent(SoilDataActivity.this, SeedDataActivity.class);
+                    intent1.putExtra("product_name",crop_id_chosen);
+                    intent1.putExtra("soil",soil);
+                    startActivity(intent1);
+                }
+            }
+        });
 
-
-    }
-    public ArrayList<SoilDataModel> getSoilData(){
-        ArrayList<SoilDataModel> holder=new ArrayList<>();
-
-        SoilDataModel model=new SoilDataModel();
-        model.setHeader("Python");
-        model.setDesc("Computer Language");
-        model.setId(1);
-        //model.setImg(R.drawable.ic_launcher_foreground);
-        holder.add(model);
-
-        SoilDataModel model1=new SoilDataModel();
-        model1.setHeader("Ruby");
-        model1.setDesc("Programming Language");
-        model1.setId(4);
-        //model1.setImg(R.drawable.ic_launcher_background);
-        holder.add(model1);
-
-        SoilDataModel model3=new SoilDataModel();
-        model3.setHeader("Java");
-        model3.setDesc("Object Oriented Language");
-        model3.setId(5);
-       // model3.setImg(R.drawable.ic_launcher_background);
-        holder.add(model3);
-        return holder;
     }
     public void getSoilInfo(){
         JsonArrayRequest arrayRequest=new JsonArrayRequest(
@@ -126,6 +119,7 @@ public class SoilDataActivity extends AppCompatActivity implements ClickListener
     @Override
     public void onClick(SoilDataModel soilDataModel) {
         Log.i("Clicked this",soilDataModel.getHeader());
+        soil=soilDataModel.getId();
     }
 
 }

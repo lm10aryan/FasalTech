@@ -1,9 +1,11 @@
 package com.example.fasaltech.watermelon;
 
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -23,6 +25,7 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
     private List<ChildOptions> childOptions;
     WatermelonQuestionClickListener clickListener;
 
+
     public ChildAdapter(List<ChildOptions> childOptions, WatermelonQuestionClickListener clickListener) {
         this.childOptions = childOptions;
         this.clickListener = clickListener;
@@ -33,6 +36,7 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
     @Override
     public ChildViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.child_item, parent, false);
+
         return new ChildViewHolder(view);
     }
 
@@ -44,6 +48,17 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
             holder.tvOptions.setVisibility(View.GONE);
             holder.watermelonquestionradiobutton.setVisibility(View.GONE);
             holder.choiceEditText.setVisibility(View.VISIBLE);
+
+            holder.choiceEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+               @Override
+               public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                   childOption.setChoice(holder.choiceEditText.getText().toString());
+                   Log.i("GEt choice",childOption.getChoice());
+                   clickListener.onClick(childOption,childOptions);
+                   return true;
+               }
+           });
+
             //Log.i("Id in holder",childOption.getChoice());
         } else {
             holder.tvOptions.setText(childOption.getChoice());

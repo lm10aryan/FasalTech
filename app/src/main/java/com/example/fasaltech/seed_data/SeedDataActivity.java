@@ -31,14 +31,17 @@ public class SeedDataActivity extends AppCompatActivity implements SeedClickList
     MySeedAdapter mySeedAdapter;
     VolleySingleton volleySingleton;
     String token = "74db454e1cf94292d815cd771ebd878df0c7c46e";
-    final String field_data_url = "http://ec2-52-66-244-191.ap-south-1.compute.amazonaws.com:8000/intro-data/3/1/";
+    final String field_data_url = "http://ec2-13-233-44-214.ap-south-1.compute.amazonaws.com:8000/intro-data/3/1/";
     ArrayList<SeedDataModel> seedarraylist = new ArrayList<>();
-
+    int crop_id_chosen;
+    int soil;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seed_data);
         Intent intent = getIntent();
+        crop_id_chosen=intent.getIntExtra("product_name",0);
+        soil=intent.getIntExtra("soil",0);
         volleySingleton = VolleySingleton.getInstance(this);
         recyclerView = findViewById(R.id.seedRecyclerView);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);

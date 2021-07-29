@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +19,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.fasaltech.constant.Api;
+import com.example.fasaltech.crop_data.CropDataActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +34,8 @@ public class FieldDetailsActivity extends AppCompatActivity {
     Button buttonToProductPage;
     String total_acres;
     RequestQueue queue;
-    final String field_data_url ="http://ec2-52-66-244-191.ap-south-1.compute.amazonaws.com/add-field/";
+    String token;
+
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -39,11 +43,14 @@ public class FieldDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_field_details);
         Intent intent=getIntent();
+        token=intent.getStringExtra("token");
         queue= Volley.newRequestQueue(this);
         total_acresEditText=findViewById(R.id.total_acresEditText);
         fieldTextView=findViewById(R.id.fieldTextView);
         buttonToProductPage=findViewById(R.id.buttonToProductPage);
         fieldTextView.setText("How much acres do you own?");
+        addTokenInfo();
+
         buttonToProductPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,13 +62,15 @@ public class FieldDetailsActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 JsonObjectRequest objectRequest=new JsonObjectRequest(
-                        Request.Method.GET,
-                        field_data_url,
+                        Request.Method.POST,
+                        Api.field_data_url,
                         fieldDetailsObject,
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
-
+                                Intent intent1=new Intent(FieldDetailsActivity.this, CropDataActivity.class);
+                                intent1.putExtra("token",token);
+                                startActivity(intent1);
                             }
                         },
                         new Response.ErrorListener() {
@@ -74,15 +83,20 @@ public class FieldDetailsActivity extends AppCompatActivity {
                     public Map<String, String> getHeaders() throws AuthFailureError {
                         HashMap<String, String> headers = new HashMap<String, String>();
                         headers.put("Content-Type", "application/json");
-                        //headers.put("Authorization", "Token "+token);
+                        headers.put("Authorization", "Token "+token);
                         return headers;
                     }
                 };
                 queue.add(objectRequest);
-
-
             }
         });
-
     }
+    private void addTokenInfo(){
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.fasaltech",MODE_PRIVATE);
+        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+        myEdit.putInt("page_no",5);
+        Log.i("we are in","field temp");
+        myEdit.commit();
+    }
+
 }

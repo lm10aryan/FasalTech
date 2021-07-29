@@ -44,6 +44,7 @@ public class AuthenticationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_authentication);
         Intent intent=getIntent();
         mAuth = FirebaseAuth.getInstance();
+
         phone_number=intent.getStringExtra("phone_number");
         btnVerifyOtp=findViewById(R.id.button3);
         btnSendOtp=findViewById(R.id.button4);

@@ -15,7 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.NoActionBar">
-        <activity android:name=".watermelon.WatermelonQuestionsActivity">
+        <activity android:name=".MainActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,7 +30,7 @@
         <activity android:name=".FarmerDetailActivity" />
         <activity android:name=".AuthenticationActivity" />
         <activity android:name=".login.LoginActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".watermelon.WatermelonQuestionsActivity">
            <!-- <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
