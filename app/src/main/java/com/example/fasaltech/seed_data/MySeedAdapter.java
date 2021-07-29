@@ -24,8 +24,6 @@ import java.util.ArrayList;
 public class MySeedAdapter extends RecyclerView.Adapter<MySeedViewHolder> {
     ArrayList<SeedDataModel> data;
     SeedClickListener seedClickListener;
-    int number = 0;
-    int getPosition = -1;
     private int selected_position = -1;
 
     public MySeedAdapter(ArrayList<SeedDataModel> data, SeedClickListener seedClickListener) {

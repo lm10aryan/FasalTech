@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/seedRecyclerView"
     android:layout_width="match_parent"
-    android:layout_height="600dp"
+    android:layout_height="match_parent"
     tools:context=".seed_data.SeedDataActivity">
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="641dp"
+        android:id="@+id/seedRecyclerView"/>
 
+    <Button
+        android:id="@+id/buttonToProductInfoPage"
+        android:layout_width="205dp"
+        android:layout_height="75dp"
+        android:layout_below="@+id/seedRecyclerView"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="12dp"
+        android:text="Next"
+        android:textSize="20sp" />
 
-</androidx.recyclerview.widget.RecyclerView>
+</RelativeLayout>

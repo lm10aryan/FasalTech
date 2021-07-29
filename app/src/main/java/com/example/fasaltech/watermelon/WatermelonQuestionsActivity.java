@@ -6,8 +6,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -35,7 +38,7 @@ import java.util.Map;
 
 public class WatermelonQuestionsActivity extends AppCompatActivity implements WatermelonMainClickListener {
     VolleySingleton volleySingleton;
-    String token = "74db454e1cf94292d815cd771ebd878df0c7c46e";
+    String token;
     String melonUrl = "http://ec2-52-66-244-191.ap-south-1.compute.amazonaws.com:8000/dumm/";
     RecyclerView rvParent;
     int subq_id;
@@ -47,11 +50,21 @@ public class WatermelonQuestionsActivity extends AppCompatActivity implements Wa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_watermelon_questions);
+        Intent intent=getIntent();
+        addTokenInfo();
+        token=intent.getStringExtra("token");
         volleySingleton = VolleySingleton.getInstance(this);
         rvParent = findViewById(R.id.rvParent);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvParent.setLayoutManager(layoutManager);
         getCropInfo();
+        Button button=findViewById(R.id.submitWatermelonAnswers);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendRequest();
+            }
+        });
     }
 
     public void getCropInfo() {
@@ -161,7 +174,53 @@ public class WatermelonQuestionsActivity extends AppCompatActivity implements Wa
                 }
             }
         }
-        Log.i("Parent List",parentAskedList.toString());
-        Log.i("Child Asked List",childAskedList.toString());
+
+    }
+    private void addTokenInfo(){
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.fasaltech",MODE_PRIVATE);
+        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+        myEdit.putInt("page_no",10);
+        Log.i("we are in","watermelon question table");
+        myEdit.commit();
+    }
+
+    public void sendRequest(){
+        JSONArray jsonArray=new JSONArray();
+        for(int i=0;i<parentAskedList.size();i++){
+            try {
+                JSONObject jsonObject=new JSONObject();
+                jsonObject.put("question_id",parentAskedList.get(i));
+                jsonObject.put("choice_id",childAskedList.get(i)) ;
+                jsonArray.put(jsonObject);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        JsonArrayRequest arrayRequest=new JsonArrayRequest(
+                Request.Method.POST,
+                Api.post_answers_url,
+                jsonArray,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Log.i("Success","Kudos");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("Erorr",error.toString());
+                    }
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", "Token "+token);
+                return headers;
+            }
+        };
+        volleySingleton.addToRequestQueue(arrayRequest);
     }
 }

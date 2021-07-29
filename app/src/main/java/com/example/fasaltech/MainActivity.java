@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences=getSharedPreferences("com.example.fasaltech",MODE_PRIVATE);
         int number=sharedPreferences.getInt("page_no",100);
         String token =sharedPreferences.getString("token","");
+        number=6;
         if(token != null){
             if(number==4){
                 Intent intent=new Intent(MainActivity.this,FarmerDetailActivity.class);
@@ -144,6 +145,11 @@ public class MainActivity extends AppCompatActivity {
             }
             else if(number==6){
                 Intent intent=new Intent(MainActivity.this,CropDataActivity.class);
+                intent.putExtra("token",token);
+                startActivity(intent);
+            }
+            else if(number==10){
+                Intent intent=new Intent(MainActivity.this,WatermelonQuestionsActivity.class);
                 intent.putExtra("token",token);
                 startActivity(intent);
             }

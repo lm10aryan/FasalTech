@@ -37,6 +37,7 @@ public class CropDataActivity extends AppCompatActivity implements CropClickList
     VolleySingleton volleySingleton;
     String token;
     int crop_id_chosen=0;
+    String crop_name="";
     final String field_data_url ="http://ec2-13-233-44-214.ap-south-1.compute.amazonaws.com:8000/intro-data/2/1/";
     ArrayList<CropDataModel> croparraylist=new ArrayList<>();
 
@@ -61,6 +62,8 @@ public class CropDataActivity extends AppCompatActivity implements CropClickList
                 if(crop_id_chosen!=0){
                     Intent intent1=new Intent(CropDataActivity.this, SoilDataActivity.class);
                     intent1.putExtra("product_name",crop_id_chosen);
+                    intent1.putExtra("crop_name",crop_name);
+                    intent1.putExtra("token",token);
                     startActivity(intent1);
                 }
             }
@@ -120,6 +123,7 @@ public class CropDataActivity extends AppCompatActivity implements CropClickList
     public void onClick(CropDataModel cropDataModel) {
         Log.i("Clicked this",cropDataModel.getHeader());
         crop_id_chosen=cropDataModel.getId();
+        crop_name=cropDataModel.getHeader();
         Log.i("Clicked on",String.valueOf(crop_id_chosen));
     }
     private void addTokenInfo(){

@@ -7,12 +7,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.example.fasaltech.ProductDetailsActivity;
 import com.example.fasaltech.R;
 import com.example.fasaltech.VolleySingleton;
 import com.example.fasaltech.crop_data.CropDataModel;
@@ -30,11 +33,13 @@ public class SeedDataActivity extends AppCompatActivity implements SeedClickList
     RecyclerView recyclerView;
     MySeedAdapter mySeedAdapter;
     VolleySingleton volleySingleton;
-    String token = "74db454e1cf94292d815cd771ebd878df0c7c46e";
+    String token;
     final String field_data_url = "http://ec2-13-233-44-214.ap-south-1.compute.amazonaws.com:8000/intro-data/3/1/";
     ArrayList<SeedDataModel> seedarraylist = new ArrayList<>();
     int crop_id_chosen;
     int soil;
+    int seed_type=0;
+    String crop_name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +47,8 @@ public class SeedDataActivity extends AppCompatActivity implements SeedClickList
         Intent intent = getIntent();
         crop_id_chosen=intent.getIntExtra("product_name",0);
         soil=intent.getIntExtra("soil",0);
+        crop_name=intent.getStringExtra("crop_name");
+        token=intent.getStringExtra("token");
         volleySingleton = VolleySingleton.getInstance(this);
         recyclerView = findViewById(R.id.seedRecyclerView);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
@@ -49,6 +56,22 @@ public class SeedDataActivity extends AppCompatActivity implements SeedClickList
         mySeedAdapter = new MySeedAdapter(seedarraylist, this);
         recyclerView.setAdapter(mySeedAdapter);
         getSeedInfo();
+        Button button=findViewById(R.id.buttonToProductInfoPage);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(seed_type!=0){
+                    Intent intent1=new Intent(SeedDataActivity.this, ProductDetailsActivity.class);
+                    intent1.putExtra("product_name",crop_id_chosen);
+                    intent1.putExtra("soil",soil);
+                    intent1.putExtra("seed_type",seed_type);
+                    intent1.putExtra("crop_name",crop_name);
+                    intent1.putExtra("token",token);
+                    startActivity(intent1);
+                }
+            }
+        });
+
     }
 
     public void getSeedInfo() {
@@ -102,5 +125,6 @@ public class SeedDataActivity extends AppCompatActivity implements SeedClickList
     @Override
     public void onClick(SeedDataModel seedDataModel) {
         Log.i("Clicked this", seedDataModel.getHeader());
+        seed_type=seedDataModel.getId();
     }
 }

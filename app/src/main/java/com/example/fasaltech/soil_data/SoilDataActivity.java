@@ -34,17 +34,20 @@ public class SoilDataActivity extends AppCompatActivity implements ClickListener
     RecyclerView recyclerView;
     MySoilAdapter mySoilAdapter;
     VolleySingleton volleySingleton;
-    String token="74db454e1cf94292d815cd771ebd878df0c7c46e";
+    String token;
     final String field_data_url ="http://ec2-13-233-44-214.ap-south-1.compute.amazonaws.com:8000/intro-data/1/1/";
     ArrayList<SoilDataModel> soilarrayList=new ArrayList<>();
     int crop_id_chosen;
     int soil;
+    String crop_name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_soil_data);
         Intent intent=getIntent();
         crop_id_chosen=intent.getIntExtra("product_name",0);
+        crop_name=intent.getStringExtra("crop_name");
+        token=intent.getStringExtra("token");
         volleySingleton= VolleySingleton.getInstance(this);
         recyclerView=findViewById(R.id.recyclerView);
         GridLayoutManager gridLayoutManager=new GridLayoutManager(this,2);
@@ -61,6 +64,8 @@ public class SoilDataActivity extends AppCompatActivity implements ClickListener
                     Intent intent1=new Intent(SoilDataActivity.this, SeedDataActivity.class);
                     intent1.putExtra("product_name",crop_id_chosen);
                     intent1.putExtra("soil",soil);
+                    intent1.putExtra("crop_name",crop_name);
+                    intent1.putExtra("token",token);
                     startActivity(intent1);
                 }
             }

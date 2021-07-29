@@ -11,6 +11,7 @@ public class Api {
     public static final String farmer_data_url ="http://ec2-13-233-44-214.ap-south-1.compute.amazonaws.com:8000/add-farmer/";
     public static final String field_data_url ="http://ec2-13-233-44-214.ap-south-1.compute.amazonaws.com:8000/add-field/";
 
-
+    public static final String product_data_url="http://ec2-13-233-44-214.ap-south-1.compute.amazonaws.com:8000/add-product/";
+    public static final String post_answers_url="http://ec2-13-233-44-214.ap-south-1.compute.amazonaws.com:8000/farm-answers/";
 
 }
