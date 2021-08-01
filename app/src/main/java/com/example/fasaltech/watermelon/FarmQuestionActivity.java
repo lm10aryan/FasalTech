@@ -18,11 +18,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.fasaltech.MainActivity;
+import com.example.fasaltech.HomePageActivity;
 import com.example.fasaltech.R;
 import com.example.fasaltech.VolleySingleton;
 import com.example.fasaltech.constant.Api;
-import com.example.fasaltech.crop_data.CropDataModel;
 import com.example.fasaltech.model.ChildOptions;
 import com.example.fasaltech.model.ParentQuestion;
 
@@ -36,30 +35,29 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class WatermelonQuestionsActivity extends AppCompatActivity implements WatermelonMainClickListener {
+public class FarmQuestionActivity extends AppCompatActivity implements WatermelonMainClickListener {
     VolleySingleton volleySingleton;
     String token;
     RecyclerView rvParent;
     int subq_id;
     int subc_id;
     int crop_id;
-    List<Integer>parentAskedList=new LinkedList<>();
+    List<Integer> parentAskedList=new LinkedList<>();
     List<Integer>childAskedList=new LinkedList<>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_watermelon_questions);
+        setContentView(R.layout.activity_farm_question);
         Intent intent=getIntent();
         addTokenInfo();
         token=intent.getStringExtra("token");
         crop_id=intent.getIntExtra("crop_id",0);
         volleySingleton = VolleySingleton.getInstance(this);
-        rvParent = findViewById(R.id.rvParent);
+        rvParent = findViewById(R.id.rvFarmParent);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvParent.setLayoutManager(layoutManager);
         getCropInfo();
-        Button button=findViewById(R.id.submitWatermelonAnswers);
+        Button button=findViewById(R.id.submitFarmQuestions);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -72,7 +70,7 @@ public class WatermelonQuestionsActivity extends AppCompatActivity implements Wa
         ProgressDialog pd = ProgressDialog.show(this, null, "Please wait", false, false);
         JsonObjectRequest objectRequest = new JsonObjectRequest(
                 Request.Method.GET,
-                Api.watermelonQuestionsUrl,
+                Api.farmQuestionUrl,
                 null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -117,7 +115,7 @@ public class WatermelonQuestionsActivity extends AppCompatActivity implements Wa
                                 questionList.add(new ParentQuestion(qId, mcId, question, choiceList, subq_id, subc_id));
                             }
                             // Log.i("Count",String.valueOf(questionList.size()));
-                            ParentAdapter parentAdapter = new ParentAdapter(questionList, subQuestionList, (WatermelonQuestionsActivity.this::onClick));
+                            ParentAdapter parentAdapter = new ParentAdapter(questionList, subQuestionList, (FarmQuestionActivity.this::onClick));
                             rvParent.setAdapter(parentAdapter);
 
                         } catch (JSONException e) {
@@ -148,8 +146,6 @@ public class WatermelonQuestionsActivity extends AppCompatActivity implements Wa
 
     @Override
     public void onClick(ParentQuestion parentQuestion) {
-        //Log.i("Question clicked user", parentQuestion.getQuestionText());
-        //check if question has been answered already
         boolean flag=true;
         for(int j=0;j<parentAskedList.size();j++){
             if(parentQuestion.getQId()==parentAskedList.get(j)){
@@ -175,24 +171,22 @@ public class WatermelonQuestionsActivity extends AppCompatActivity implements Wa
                 }
             }
         }
-
     }
     private void addTokenInfo(){
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.fasaltech",MODE_PRIVATE);
         SharedPreferences.Editor myEdit = sharedPreferences.edit();
-        myEdit.putInt("page_no",10);
+        myEdit.putInt("page_no",11);
         Log.i("we are in","watermelon question table");
         myEdit.commit();
     }
-
-
     public void sendRequest(){
+        Log.i("Sending","request");
         JSONArray jsonArray=new JSONArray();
         for(int i=0;i<parentAskedList.size();i++){
             try {
                 JSONObject jsonObject=new JSONObject();
                 jsonObject.put("question_id",parentAskedList.get(i));
-                jsonObject.put("choice_id",childAskedList.get(i)) ;
+                jsonObject.put("choice_id",childAskedList.get(i));
                 jsonObject.put("crop_id",crop_id);
                 jsonArray.put(jsonObject);
 
@@ -200,6 +194,7 @@ public class WatermelonQuestionsActivity extends AppCompatActivity implements Wa
                 e.printStackTrace();
             }
         }
+        Log.i("Json",jsonArray.toString());
         JsonArrayRequest arrayRequest=new JsonArrayRequest(
                 Request.Method.POST,
                 Api.post_answers_url,
@@ -207,9 +202,8 @@ public class WatermelonQuestionsActivity extends AppCompatActivity implements Wa
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        Intent intent1=new Intent(WatermelonQuestionsActivity.this,FarmQuestionActivity.class);
+                        Intent intent1=new Intent(FarmQuestionActivity.this, HomePageActivity.class);
                         intent1.putExtra("token",token);
-                        intent1.putExtra("crop_id",crop_id);
                         startActivity(intent1);
                     }
                 },
@@ -223,7 +217,7 @@ public class WatermelonQuestionsActivity extends AppCompatActivity implements Wa
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json");
-                headers.put("Authorization", "Token "+token);
+                headers.put("Authorization", "Token "+"04ed0fe86a1761647dda8036821f5df6f180af0d");
                 return headers;
             }
         };

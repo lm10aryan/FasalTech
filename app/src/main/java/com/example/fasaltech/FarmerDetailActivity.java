@@ -58,6 +58,7 @@ public class FarmerDetailActivity extends AppCompatActivity {
         buttonToNextPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 JSONObject farmerDetailsObject=new JSONObject();
                 try {
                     farmerDetailsObject.put("f_name",editTextFirstName.getText().toString().trim());

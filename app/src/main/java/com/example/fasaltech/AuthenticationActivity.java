@@ -96,6 +96,7 @@ public class AuthenticationActivity extends AppCompatActivity {
     }
     private void sendVerificationCodeToUser(String phone_number){
         Log.i("Send Verification ","Done");
+        long second_limit=600;
         PhoneAuthOptions options =
                 PhoneAuthOptions.newBuilder(mAuth)
                         .setPhoneNumber("+91 "+phone_number)       // Phone number to verify

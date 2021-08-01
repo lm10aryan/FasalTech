@@ -38,7 +38,7 @@ public class CropDataActivity extends AppCompatActivity implements CropClickList
     String token;
     int crop_id_chosen=0;
     String crop_name="";
-    final String field_data_url ="http://ec2-13-233-44-214.ap-south-1.compute.amazonaws.com:8000/intro-data/2/1/";
+    final String field_data_url ="http://ec2-3-109-139-249.ap-south-1.compute.amazonaws.com:8000/intro-data/2/1/";
     ArrayList<CropDataModel> croparraylist=new ArrayList<>();
 
     @Override

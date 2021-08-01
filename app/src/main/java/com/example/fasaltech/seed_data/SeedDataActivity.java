@@ -34,7 +34,7 @@ public class SeedDataActivity extends AppCompatActivity implements SeedClickList
     MySeedAdapter mySeedAdapter;
     VolleySingleton volleySingleton;
     String token;
-    final String field_data_url = "http://ec2-13-233-44-214.ap-south-1.compute.amazonaws.com:8000/intro-data/3/1/";
+    final String field_data_url = "http://ec2-3-109-139-249.ap-south-1.compute.amazonaws.com:8000/intro-data/3/1/";
     ArrayList<SeedDataModel> seedarraylist = new ArrayList<>();
     int crop_id_chosen;
     int soil;

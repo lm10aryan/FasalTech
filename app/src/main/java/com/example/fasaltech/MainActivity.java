@@ -1,9 +1,18 @@
 package com.example.fasaltech;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,7 +30,9 @@ import com.example.fasaltech.constant.Api;
 import com.example.fasaltech.crop_data.CropDataActivity;
 import com.example.fasaltech.login.LoginActivity;
 import com.example.fasaltech.watermelon.WatermelonQuestionsActivity;
+import com.google.android.gms.common.api.GoogleApiClient;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,9 +47,11 @@ public class MainActivity extends AppCompatActivity {
     String phone_number="";
     EditText passwordEditText;
     String password;
-    final String url ="http://ec2-52-66-244-191.ap-south-1.compute.amazonaws.com/auth/token/login/";
+    final String url ="http://ec2-3-109-139-249.ap-south-1.compute.amazonaws.com:8000/auth/token/login/";
     String token;
     SharedPreferences sharedPreferences;
+
+
 
 
     @Override
@@ -57,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
         passwordEditText=findViewById(R.id.passwordloginEditText);
         isUserLoggedOrNot();
         //sendToNextPage(); //Using this for now... Need to delete it to start from otp verification page
-
         loginbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences=getSharedPreferences("com.example.fasaltech",MODE_PRIVATE);
         int number=sharedPreferences.getInt("page_no",100);
         String token =sharedPreferences.getString("token","");
-        number=6;
+        int crop_id=sharedPreferences.getInt("crop_id",0);
         if(token != null){
             if(number==4){
                 Intent intent=new Intent(MainActivity.this,FarmerDetailActivity.class);
@@ -151,6 +163,13 @@ public class MainActivity extends AppCompatActivity {
             else if(number==10){
                 Intent intent=new Intent(MainActivity.this,WatermelonQuestionsActivity.class);
                 intent.putExtra("token",token);
+                intent.putExtra("crop_id",crop_id);
+                startActivity(intent);
+            }
+            else if(number==11){
+                Intent intent=new Intent(MainActivity.this,WatermelonQuestionsActivity.class);
+                intent.putExtra("token",token);
+                intent.putExtra("crop_id",crop_id);
                 startActivity(intent);
             }
         }

@@ -52,45 +52,46 @@ public class LoginActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserCompleteLogin();
-                /*password=passwordEditText.getText().toString().trim();
+                //UserCompleteLogin();
+                password=passwordEditText.getText().toString().trim();
                 re_password=repasswordEditText.getText().toString().trim();
-                final JSONObject object2=new JSONObject();
-                try {
-                    object2.put("phone_number",phone_number);
-                    object2.put("password",password);
-                    object2.put("re_password",re_password);
+                if(password.matches(re_password)){
+                    final JSONObject object2=new JSONObject();
+                    try {
+                        object2.put("phone_number",phone_number);
+                        object2.put("password",password);
+                        object2.put("re_password",re_password);
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(
-                        Request.Method.POST,
-                        Api.registerUrl,
-                        object2,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                UserCompleteLogin();
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.i("Error","error");
-                            }
-                        }
-                ){
-                    @Override
-                    public Map<String, String> getHeaders() throws AuthFailureError {
-                        HashMap<String, String> params = new HashMap<String, String>();
-                        params.put("Content-Type", "application/json");
-                        params.put("Charset", "UTF-8");
-                        return params;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-
-                };
-                queue.add(jsonObjectRequest);   */
+                    JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(
+                            Request.Method.POST,
+                            Api.registerUrl,
+                            object2,
+                            new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    UserCompleteLogin();
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.i("Error","error");
+                                }
+                            }
+                    ){
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            HashMap<String, String> params = new HashMap<String, String>();
+                            params.put("Content-Type", "application/json");
+                            params.put("Charset", "UTF-8");
+                            return params;
+                        }
+                    };
+                    queue.add(jsonObjectRequest);
+                }
             }
         });
     }
@@ -99,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
         password=passwordEditText.getText().toString();
         final JSONObject object3=new JSONObject();
         try {
-            object3.put("phone_number","9090909090");
+            object3.put("phone_number",phone_number);
             object3.put("password",password);
 
         } catch (JSONException e) {

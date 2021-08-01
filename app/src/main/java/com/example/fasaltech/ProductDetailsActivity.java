@@ -3,8 +3,17 @@ package com.example.fasaltech;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +21,7 @@ import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -24,6 +34,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.fasaltech.constant.Api;
 import com.example.fasaltech.watermelon.WatermelonQuestionsActivity;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,7 +53,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
     VolleySingleton volleySingleton;
     String token;
     JSONObject productDetailsObject;
-    //RequestQueue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,13 +67,13 @@ public class ProductDetailsActivity extends AppCompatActivity {
         seed_type=intent.getIntExtra("seed_type",0);
         crop_name=intent.getStringExtra("crop_name");
         token=intent.getStringExtra("token");
+        Log.i("Token",token);
 
         TextView questionProductText=findViewById(R.id.questionProductText);
         String questionText="How many acres are you growing ";
         questionProductText.setText(questionText+crop_name+" ?");
         EditText editTextNumber=findViewById(R.id.editTextNumber);
         Button submitProductDetails=findViewById(R.id.submitProductDetails);
-
         CalendarView calendarView=findViewById(R.id.calendarView);
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
@@ -86,40 +96,36 @@ public class ProductDetailsActivity extends AppCompatActivity {
                         productDetailsObject.put("date_of_start",date_selected);
                         productDetailsObject.put("acres",Integer.valueOf(acres_number));
                         Log.i("Product Details",productDetailsObject.toString());
-                        StringRequest stringRequest=new StringRequest(
+                        JsonObjectRequest objectRequest=new JsonObjectRequest(
+                                Request.Method.POST,
                                 Api.product_data_url,
-                                new Response.Listener<String>() {
+                                productDetailsObject,
+                                new Response.Listener<JSONObject>() {
                                     @Override
-                                    public void onResponse(String response) {
-                                        Log.i("Success","Yes");
+                                    public void onResponse(JSONObject response) {
+                                        addCropId();
+                                        Intent intent1=new Intent(ProductDetailsActivity.this, WatermelonQuestionsActivity.class);
+                                        intent1.putExtra("token",token);
+                                        intent1.putExtra("crop_id",crop_id_chosen);
+                                        startActivity(intent1);
                                     }
                                 },
                                 new Response.ErrorListener() {
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
-                                        Log.i("error",error.toString());
+                                        Log.i("Error",error.toString());
                                     }
-                                }){
-                            @Override
-                            protected Map<String,String> getParams(){
-                                Map<String,String> stringMap=new HashMap<>();
-                                stringMap.put("product_name",String.valueOf(crop_id_chosen));
-                                stringMap.put("soil",String.valueOf(soil));
-                                stringMap.put("seed_type",String.valueOf(seed_type));
-                                stringMap.put("date_of_start",date_selected);
-                                stringMap.put("acres",String.valueOf(acres_number));
-                                return stringMap;
-                            }
-
+                                }
+                        ){
                             @Override
                             public Map<String, String> getHeaders() throws AuthFailureError {
-                                Map<String,String> params = new HashMap<String, String>();
-                                params.put("Content-Type","application/json");
-                                params.put("Authorization", "Token "+token);
-                                return params;
+                                HashMap<String, String> headers = new HashMap<String, String>();
+                                headers.put("Content-Type", "application/json");
+                                headers.put("Authorization", "Token "+token);
+                                return headers;
                             }
                         };
-                        volleySingleton.addToRequestQueue(stringRequest);
+                        volleySingleton.addToRequestQueue(objectRequest);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -128,43 +134,106 @@ public class ProductDetailsActivity extends AppCompatActivity {
             }
         });
     }
-    public void sendProductDetails(JSONObject jsonObject){
-        //Log.i("Data",jsonObject.toString());
-        JsonObjectRequest objectRequest=new JsonObjectRequest(
-                Request.Method.POST,
-                Api.product_data_url,
-                jsonObject,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Intent intent1=new Intent(ProductDetailsActivity.this, WatermelonQuestionsActivity.class);
-                        intent1.putExtra("token",token);
-                        startActivity(intent1);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.i("Error",error.toString());
-                    }
-                }
-        ){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/json");
-                headers.put("Authorization", "Token "+token);
-                return headers;
-            }
-        };
-        volleySingleton.addToRequestQueue(objectRequest);
+
+    private void addCropId(){
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.fasaltech",MODE_PRIVATE);
+        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+        myEdit.putInt("crop_id",crop_id_chosen);
+        myEdit.commit();
     }
+
 }
 
 
-   /* Map<String,String> stringMap=new HashMap<>();
-                                stringMap.put("product_name",String.valueOf(crop_id_chosen));
-                                        stringMap.put("soil",String.valueOf(soil));
-                                        stringMap.put("seed_type",String.valueOf(seed_type));
-                                        stringMap.put("date_of_start",date_selected);
-                                        stringMap.put("acres",String.valueOf(acres_number));  */
+/*
+ //RequestQueue queue;
+    String latitude="";
+    String longitude="";
+    LocationManager locationManager;
+    LocationListener locationListener;
+    boolean savedLocationInfo=false;
+above onCreate -
+ @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+            if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED){
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
+            }
+        }
+    }
+
+Below all functions-
+
+    public void getLocationPoints(){
+        locationManager=(LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        locationListener=new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                latitude=String.valueOf(location.getLatitude());
+                longitude=String.valueOf(location.getLongitude());
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+
+            }
+        };
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
+        }else {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
+        }
+    }
+    public void sendLocationInfo(){
+        if(latitude.isEmpty()){
+            Toast.makeText(getApplicationContext(),"Please switch your location services",Toast.LENGTH_SHORT).show();
+        }else {
+            JSONObject locationDetailsObject=new JSONObject();
+            try {
+                locationDetailsObject.put("latitude",latitude);
+                locationDetailsObject.put("longitude",longitude);
+                JsonObjectRequest objectRequest=new JsonObjectRequest(
+                        Request.Method.POST,
+                        Api.post_location_url,
+                        locationDetailsObject,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Log.i("Location Info","Saved");
+                                savedLocationInfo=true;
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.i("Error at Location",error.toString());
+                            }
+                        }
+
+                ){
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        HashMap<String, String> headers = new HashMap<String, String>();
+                        headers.put("Content-Type", "application/json");
+                        headers.put("Authorization", "Token "+token);
+                        return headers;
+                    }
+                };
+                volleySingleton.addToRequestQueue(objectRequest);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+ */

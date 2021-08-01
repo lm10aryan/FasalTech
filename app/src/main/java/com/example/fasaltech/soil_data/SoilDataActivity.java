@@ -35,7 +35,7 @@ public class SoilDataActivity extends AppCompatActivity implements ClickListener
     MySoilAdapter mySoilAdapter;
     VolleySingleton volleySingleton;
     String token;
-    final String field_data_url ="http://ec2-13-233-44-214.ap-south-1.compute.amazonaws.com:8000/intro-data/1/1/";
+    final String field_data_url ="http://ec2-3-109-139-249.ap-south-1.compute.amazonaws.com:8000/intro-data/1/1/";
     ArrayList<SoilDataModel> soilarrayList=new ArrayList<>();
     int crop_id_chosen;
     int soil;

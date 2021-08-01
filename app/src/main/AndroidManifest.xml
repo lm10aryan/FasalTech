@@ -15,7 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ProductDetailsActivity"></activity>
+        <activity android:name=".HomePageActivity"></activity>
+        <activity android:name=".watermelon.FarmQuestionActivity" />
+        <activity android:name=".ProductDetailsActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
