@@ -54,40 +54,42 @@ public class FieldDetailsActivity extends AppCompatActivity {
         buttonToProductPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                total_acres=total_acresEditText.getText().toString().trim();
-                JSONObject fieldDetailsObject=new JSONObject();
-                try {
-                    fieldDetailsObject.put("total_acres",total_acres);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                JsonObjectRequest objectRequest=new JsonObjectRequest(
-                        Request.Method.POST,
-                        Api.field_data_url,
-                        fieldDetailsObject,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                Intent intent1=new Intent(FieldDetailsActivity.this, CropDataActivity.class);
-                                intent1.putExtra("token",token);
-                                startActivity(intent1);
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                            }
-                        }
-                ){
-                    @Override
-                    public Map<String, String> getHeaders() throws AuthFailureError {
-                        HashMap<String, String> headers = new HashMap<String, String>();
-                        headers.put("Content-Type", "application/json");
-                        headers.put("Authorization", "Token "+token);
-                        return headers;
+                if(checkFunctionValidation()){
+                    total_acres=total_acresEditText.getText().toString().trim();
+                    JSONObject fieldDetailsObject=new JSONObject();
+                    try {
+                        fieldDetailsObject.put("total_acres",total_acres);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                };
-                queue.add(objectRequest);
+                    JsonObjectRequest objectRequest=new JsonObjectRequest(
+                            Request.Method.POST,
+                            Api.field_data_url,
+                            fieldDetailsObject,
+                            new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    Intent intent1=new Intent(FieldDetailsActivity.this, CropDataActivity.class);
+                                    intent1.putExtra("token",token);
+                                    startActivity(intent1);
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                }
+                            }
+                    ){
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            HashMap<String, String> headers = new HashMap<String, String>();
+                            headers.put("Content-Type", "application/json");
+                            headers.put("Authorization", "Token "+token);
+                            return headers;
+                        }
+                    };
+                    queue.add(objectRequest);
+                }
             }
         });
     }
@@ -97,6 +99,13 @@ public class FieldDetailsActivity extends AppCompatActivity {
         myEdit.putInt("page_no",5);
         Log.i("we are in","field temp");
         myEdit.commit();
+    }
+    public boolean checkFunctionValidation(){
+        if(total_acresEditText.getText().toString().isEmpty()){
+            total_acresEditText.setError("Dont leave this empty");
+            return false;
+        }
+        return true;
     }
 
 }

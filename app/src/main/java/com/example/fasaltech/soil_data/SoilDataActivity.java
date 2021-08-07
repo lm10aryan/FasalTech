@@ -16,6 +16,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.example.fasaltech.ProductDetailsActivity;
 import com.example.fasaltech.R;
 import com.example.fasaltech.VolleySingleton;
 import com.example.fasaltech.crop_data.CropDataActivity;
@@ -61,12 +62,24 @@ public class SoilDataActivity extends AppCompatActivity implements ClickListener
             @Override
             public void onClick(View view) {
                 if(soil!=0){
-                    Intent intent1=new Intent(SoilDataActivity.this, SeedDataActivity.class);
-                    intent1.putExtra("product_name",crop_id_chosen);
-                    intent1.putExtra("soil",soil);
-                    intent1.putExtra("crop_name",crop_name);
-                    intent1.putExtra("token",token);
-                    startActivity(intent1);
+                    if(crop_id_chosen==1){
+                        Intent intent1=new Intent(SoilDataActivity.this, SeedDataActivity.class);
+                        intent1.putExtra("product_name",crop_id_chosen);
+                        intent1.putExtra("soil",soil);
+                        intent1.putExtra("crop_name",crop_name);
+                        intent1.putExtra("token",token);
+                        startActivity(intent1);
+                    }
+                    else {
+                        Intent intent1=new Intent(SoilDataActivity.this, ProductDetailsActivity.class);
+                        intent1.putExtra("product_name",crop_id_chosen);
+                        intent1.putExtra("soil",soil);
+                        intent1.putExtra("seed_type",2);
+                        intent1.putExtra("crop_name",crop_name);
+                        intent1.putExtra("token",token);
+                        startActivity(intent1);
+                    }
+
                 }
             }
         });

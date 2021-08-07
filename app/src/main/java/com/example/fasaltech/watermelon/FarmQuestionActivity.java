@@ -176,7 +176,7 @@ public class FarmQuestionActivity extends AppCompatActivity implements Watermelo
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.fasaltech",MODE_PRIVATE);
         SharedPreferences.Editor myEdit = sharedPreferences.edit();
         myEdit.putInt("page_no",11);
-        Log.i("we are in","watermelon question table");
+        Log.i("we are in","farm question table");
         myEdit.commit();
     }
     public void sendRequest(){

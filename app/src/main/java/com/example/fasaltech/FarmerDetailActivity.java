@@ -59,47 +59,49 @@ public class FarmerDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                JSONObject farmerDetailsObject=new JSONObject();
-                try {
-                    farmerDetailsObject.put("f_name",editTextFirstName.getText().toString().trim());
-                    farmerDetailsObject.put("l_name",editTextLastName.getText().toString().trim());
-                    farmerDetailsObject.put("street",editTextStreet.getText().toString().trim());
-                    farmerDetailsObject.put("village",editTextVillage.getText().toString().trim());
-                    farmerDetailsObject.put("district",editTextDistrict.getText().toString().trim());
-                    farmerDetailsObject.put("state",editTextState.getText().toString().trim());
-                    farmerDetailsObject.put("pin_code",editTextPinCode.getText().toString().trim());
-                    //Sending GET Request to upload farmer personal details data
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                JsonObjectRequest objectRequest=new JsonObjectRequest(
-                        Request.Method.POST,
-                        Api.farmer_data_url,
-                        farmerDetailsObject,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                Intent intent1=new Intent(FarmerDetailActivity.this,FieldDetailsActivity.class);
-                                intent1.putExtra("token",token);
-                                startActivity(intent1);
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.i("Error",error.getLocalizedMessage());
-                            }
-                        }
-                ){
-                    @Override
-                    public Map<String, String> getHeaders() throws AuthFailureError {
-                        HashMap<String, String> headers = new HashMap<String, String>();
-                        headers.put("Content-Type", "application/json");
-                        headers.put("Authorization", "Token "+token);
-                        return headers;
+                if(checkFunctionValidation()){
+                    JSONObject farmerDetailsObject=new JSONObject();
+                    try {
+                        farmerDetailsObject.put("f_name",editTextFirstName.getText().toString().trim());
+                        farmerDetailsObject.put("l_name",editTextLastName.getText().toString().trim());
+                        farmerDetailsObject.put("street",editTextStreet.getText().toString().trim());
+                        farmerDetailsObject.put("village",editTextVillage.getText().toString().trim());
+                        farmerDetailsObject.put("district",editTextDistrict.getText().toString().trim());
+                        farmerDetailsObject.put("state",editTextState.getText().toString().trim());
+                        farmerDetailsObject.put("pin_code",editTextPinCode.getText().toString().trim());
+                        //Sending GET Request to upload farmer personal details data
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                };
-                queue.add(objectRequest);
+                    JsonObjectRequest objectRequest=new JsonObjectRequest(
+                            Request.Method.POST,
+                            Api.farmer_data_url,
+                            farmerDetailsObject,
+                            new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    Intent intent1=new Intent(FarmerDetailActivity.this,FieldDetailsActivity.class);
+                                    intent1.putExtra("token",token);
+                                    startActivity(intent1);
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.i("Error",error.getLocalizedMessage());
+                                }
+                            }
+                    ){
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            HashMap<String, String> headers = new HashMap<String, String>();
+                            headers.put("Content-Type", "application/json");
+                            headers.put("Authorization", "Token "+token);
+                            return headers;
+                        }
+                    };
+                    queue.add(objectRequest);
+                }
             }
         });
     }
@@ -108,6 +110,41 @@ public class FarmerDetailActivity extends AppCompatActivity {
         SharedPreferences.Editor myEdit = sharedPreferences.edit();
         myEdit.putInt("page_no",4);
         myEdit.commit();
+    }
+    public boolean checkFunctionValidation(){
+        if(editTextFirstName.getText().toString().isEmpty()){
+            editTextFirstName.setError("Dont leave this empty");
+            return false;
+        }
+        else if(editTextLastName.getText().toString().isEmpty()){
+            editTextLastName.setError("Dont leave this empty");
+            return false;
+        }
+        else if(editTextDistrict.getText().toString().isEmpty()){
+            editTextDistrict.setError("Dont leave this empty");
+            return false;
+        }
+        else if(editTextVillage.getText().toString().isEmpty()){
+            editTextVillage.setError("Dont leave this empty");
+            return false;
+        }
+        else if(editTextStreet.getText().toString().isEmpty()){
+            editTextStreet.setError("Dont leave this empty");
+            return false;
+        }
+        else if(editTextState.getText().toString().isEmpty()){
+            editTextState.setError("Dont leave this empty");
+            return false;
+        }
+        else if(editTextPinCode.getText().toString().isEmpty()){
+            editTextPinCode.setError("Dont leave this empty");
+            return false;
+        }
+        else if(editTextPinCode.getText().toString().length()!=6){
+            editTextPinCode.setError("The pin code should be 6 digit number");
+            return false;
+        }
+        return true;
     }
 
 

@@ -8,7 +8,7 @@
     tools:context=".seed_data.SeedDataActivity">
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="641dp"
+        android:layout_height="650dp"
         android:id="@+id/seedRecyclerView"/>
 
     <Button

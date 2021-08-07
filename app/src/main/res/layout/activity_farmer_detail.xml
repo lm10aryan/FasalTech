@@ -1,115 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".FarmerDetailActivity">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <EditText
+            android:id="@+id/editTextFIrstName"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="45dp"
+            android:ems="10"
+            android:hint="First Name"
+            android:inputType="textPersonName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/editTextFIrstName"
-        android:layout_width="165dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="68dp"
-        android:ems="10"
-        android:hint="First Name"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.046"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <EditText
+            android:id="@+id/editTextLastName"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="45dp"
+            android:layout_marginEnd="30dp"
+            android:ems="10"
+            android:hint="Last Name"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/editTextLastName"
-        android:layout_width="181dp"
-        android:layout_height="41dp"
-        android:layout_marginTop="68dp"
-        android:layout_marginEnd="48dp"
-        android:ems="10"
-        android:hint="Last Name"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <EditText
+            android:id="@+id/editTextStreet"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="45dp"
+            android:ems="10"
+            android:hint="Street"
+            android:inputType="textPersonName"
+            app:layout_constraintBottom_toTopOf="@+id/editTextDIstrict"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextFIrstName" />
 
-    <EditText
-        android:id="@+id/editTextStreet"
-        android:layout_width="162dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="110dp"
-        android:layout_marginBottom="161dp"
-        android:ems="10"
-        android:hint="Street"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/editTextDIstrict"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextFIrstName" />
+        <EditText
+            android:id="@+id/editTextVillage"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="45dp"
+            android:layout_marginEnd="30dp"
+            android:ems="10"
+            android:hint="Village"
+            android:inputType="textPersonName"
+            app:layout_constraintBottom_toTopOf="@+id/editTextState"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextLastName" />
 
-    <EditText
-        android:id="@+id/editTextVillage"
-        android:layout_width="156dp"
-        android:layout_height="42dp"
-        android:layout_marginTop="110dp"
-        android:layout_marginEnd="48dp"
-        android:layout_marginBottom="158dp"
-        android:ems="10"
-        android:hint="Village"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/editTextState"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextLastName" />
+        <EditText
+            android:id="@+id/editTextDIstrict"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="45dp"
+            android:ems="10"
+            android:hint="District"
+            android:inputType="textPersonName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextStreet" />
 
-    <EditText
-        android:id="@+id/editTextDIstrict"
-        android:layout_width="157dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="76dp"
-        android:ems="10"
-        android:hint="District"
-        android:inputType="textPersonName"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextStreet" />
+        <EditText
+            android:id="@+id/editTextState"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="45dp"
+            android:layout_marginEnd="30dp"
+            android:ems="10"
+            android:hint="State"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextVillage" />
 
-    <EditText
-        android:id="@+id/editTextState"
-        android:layout_width="178dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="37dp"
-        android:layout_marginTop="76dp"
-        android:layout_marginEnd="50dp"
-        android:ems="10"
-        android:hint="State"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.813"
-        app:layout_constraintStart_toEndOf="@+id/editTextDIstrict"
-        app:layout_constraintTop_toBottomOf="@+id/editTextVillage" />
+        <EditText
+            android:id="@+id/editTextPinCode"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="118dp"
+            android:ems="10"
+            android:hint="Pin Code"
+            android:inputType="number"
+            app:layout_constraintBottom_toTopOf="@+id/buttonToNextPage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextDIstrict" />
 
-    <EditText
-        android:id="@+id/editTextPinCode"
-        android:layout_width="172dp"
-        android:layout_height="43dp"
-        android:layout_marginStart="172dp"
-        android:layout_marginTop="51dp"
-        android:layout_marginBottom="118dp"
-        android:ems="10"
-        android:hint="Pin Code"
-        android:inputType="number"
-        app:layout_constraintBottom_toTopOf="@+id/buttonToNextPage"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextDIstrict" />
+        <Button
+            android:id="@+id/buttonToNextPage"
+            android:layout_width="163dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="80dp"
+            android:text="Button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextPinCode" />
 
-    <Button
-        android:id="@+id/buttonToNextPage"
-        android:layout_width="163dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="324dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="67dp"
-        android:text="Button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPinCode" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</ScrollView>

@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.fasaltech.login.LoginActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
@@ -118,8 +119,11 @@ public class AuthenticationActivity extends AppCompatActivity {
             public void onComplete(@NonNull @NotNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     Log.i("User","OTP Checked");
+                    Intent intent1=new Intent(AuthenticationActivity.this, LoginActivity.class);
+                    startActivity(intent1);
                 }else{
                     Log.i("Error task",task.getException().getMessage());
+                    Toast.makeText(getApplicationContext(),"Incorrect OTP",Toast.LENGTH_SHORT).show();
                 }
 
             }

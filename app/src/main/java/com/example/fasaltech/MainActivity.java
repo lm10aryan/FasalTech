@@ -29,6 +29,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.fasaltech.constant.Api;
 import com.example.fasaltech.crop_data.CropDataActivity;
 import com.example.fasaltech.login.LoginActivity;
+import com.example.fasaltech.watermelon.FarmQuestionActivity;
 import com.example.fasaltech.watermelon.WatermelonQuestionsActivity;
 import com.google.android.gms.common.api.GoogleApiClient;
 
@@ -47,12 +48,8 @@ public class MainActivity extends AppCompatActivity {
     String phone_number="";
     EditText passwordEditText;
     String password;
-    final String url ="http://ec2-3-109-139-249.ap-south-1.compute.amazonaws.com:8000/auth/token/login/";
     String token;
     SharedPreferences sharedPreferences;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onResponse(JSONObject response) {
                                 try {
                                     token=response.getString("auth_token");
-                                    Intent intent=new Intent(MainActivity.this, FarmerDetailActivity.class);
+                                    Intent intent=new Intent(MainActivity.this, HomePageActivity.class);
                                     intent.putExtra("token",token);
                                     SharedPreferences sharedPreferences = getSharedPreferences("com.example.fasaltech",MODE_PRIVATE);
                                     SharedPreferences.Editor myEdit = sharedPreferences.edit();
@@ -167,9 +164,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
             else if(number==11){
-                Intent intent=new Intent(MainActivity.this,WatermelonQuestionsActivity.class);
+                Intent intent=new Intent(MainActivity.this, FarmQuestionActivity.class);
                 intent.putExtra("token",token);
                 intent.putExtra("crop_id",crop_id);
+                startActivity(intent);
+            }
+            else if(number==12){
+                Intent intent=new Intent(MainActivity.this,HomePageActivity.class);
+                intent.putExtra("token",token);
                 startActivity(intent);
             }
         }

@@ -53,6 +53,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     VolleySingleton volleySingleton;
     String token;
     JSONObject productDetailsObject;
+    EditText editTextNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +73,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         TextView questionProductText=findViewById(R.id.questionProductText);
         String questionText="How many acres are you growing ";
         questionProductText.setText(questionText+crop_name+" ?");
-        EditText editTextNumber=findViewById(R.id.editTextNumber);
+        editTextNumber=findViewById(R.id.editTextNumber);
         Button submitProductDetails=findViewById(R.id.submitProductDetails);
         CalendarView calendarView=findViewById(R.id.calendarView);
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
@@ -86,8 +87,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String acres_number=editTextNumber.getText().toString().trim();
-                if(!acres_number.isEmpty() && !date_selected.isEmpty()){
+                if(checkValidateFunction()){
+                    String acres_number=editTextNumber.getText().toString().trim();
                     productDetailsObject=new JSONObject();
                     try {
                         productDetailsObject.put("product_name",crop_id_chosen);
@@ -141,7 +142,17 @@ public class ProductDetailsActivity extends AppCompatActivity {
         myEdit.putInt("crop_id",crop_id_chosen);
         myEdit.commit();
     }
-
+    public boolean checkValidateFunction(){
+        if(date_selected == null){
+            Toast.makeText(getApplicationContext(),"Select a date",Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else if(editTextNumber.getText().toString().isEmpty()){
+            editTextNumber.setError("Dont leave this empty");
+            return false;
+        }
+        return true;
+    }
 }
 
 

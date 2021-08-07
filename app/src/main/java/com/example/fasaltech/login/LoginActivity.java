@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -72,21 +73,23 @@ public class LoginActivity extends AppCompatActivity {
                             new Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject response) {
+                                    Toast.makeText(getApplicationContext(),"Registration going on",Toast.LENGTH_SHORT).show();
                                     UserCompleteLogin();
                                 }
                             },
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    Log.i("Error","error");
+                                    Log.i("Error",error.toString());
+                                    Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
                                 }
                             }
                     ){
                         @Override
                         public Map<String, String> getHeaders() throws AuthFailureError {
                             HashMap<String, String> params = new HashMap<String, String>();
-                            params.put("Content-Type", "application/json");
                             params.put("Charset", "UTF-8");
+                            params.put("Content-Type", "application/json");
                             return params;
                         }
                     };
@@ -113,11 +116,12 @@ public class LoginActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Intent intent1=new Intent(LoginActivity.this, FarmerDetailActivity.class);
+
                         try {
+                            Intent intent1=new Intent(LoginActivity.this, FarmerDetailActivity.class);
                             token = response.getString("auth_token");
                             intent1.putExtra("token",token);
-                            //addTokenInfo(token);
+                            addTokenInfo(token);
                             Log.i("log",token);
                             startActivity(intent1);
                         } catch (JSONException e) {
