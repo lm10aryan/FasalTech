@@ -11,17 +11,18 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView1"
         android:layout_width="match_parent"
-        android:layout_height="650dp" />
+        android:layout_height="match_parent"
+        android:layout_above="@id/buttonToSoilPage"/>
 
     <Button
         android:id="@+id/buttonToSoilPage"
-        android:layout_width="170dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/recyclerView1"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="10dp"
+        android:layout_alignParentBottom="true"
         android:layout_marginEnd="12dp"
         android:text="Next"
-        android:textSize="30sp" />
+        android:textSize="30sp"  />
 
 </RelativeLayout>

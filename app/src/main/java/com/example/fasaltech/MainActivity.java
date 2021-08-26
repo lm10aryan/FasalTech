@@ -170,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
             else if(number==12){
+
                 Intent intent=new Intent(MainActivity.this,HomePageActivity.class);
                 intent.putExtra("token",token);
                 startActivity(intent);

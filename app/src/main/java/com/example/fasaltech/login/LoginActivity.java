@@ -48,7 +48,6 @@ public class LoginActivity extends AppCompatActivity {
         phone_number=intent.getStringExtra("phone_number");
         passwordEditText=findViewById(R.id.passwordEditText);
         repasswordEditText=findViewById(R.id.repasswordEditText);
-        password=passwordEditText.getText().toString();
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,44 +55,37 @@ public class LoginActivity extends AppCompatActivity {
                 //UserCompleteLogin();
                 password=passwordEditText.getText().toString().trim();
                 re_password=repasswordEditText.getText().toString().trim();
-                if(password.matches(re_password)){
+                if(checkRegisterValidation()){
                     final JSONObject object2=new JSONObject();
                     try {
                         object2.put("phone_number",phone_number);
                         object2.put("password",password);
                         object2.put("re_password",re_password);
+                        JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(
+                                Request.Method.POST,
+                                Api.registerUrl,
+                                object2,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        Toast.makeText(getApplicationContext(),"Registration Completed",Toast.LENGTH_SHORT).show();
+                                        UserCompleteLogin();
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Log.i("Error",error.toString());
+                                        Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                        );
+                        queue.add(jsonObjectRequest);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(
-                            Request.Method.POST,
-                            Api.registerUrl,
-                            object2,
-                            new Response.Listener<JSONObject>() {
-                                @Override
-                                public void onResponse(JSONObject response) {
-                                    Toast.makeText(getApplicationContext(),"Registration going on",Toast.LENGTH_SHORT).show();
-                                    UserCompleteLogin();
-                                }
-                            },
-                            new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    Log.i("Error",error.toString());
-                                    Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                    ){
-                        @Override
-                        public Map<String, String> getHeaders() throws AuthFailureError {
-                            HashMap<String, String> params = new HashMap<String, String>();
-                            params.put("Charset", "UTF-8");
-                            params.put("Content-Type", "application/json");
-                            return params;
-                        }
-                    };
-                    queue.add(jsonObjectRequest);
+
                 }
             }
         });
@@ -154,6 +146,18 @@ public class LoginActivity extends AppCompatActivity {
         myEdit.putString("token",token);
         Log.i("Saved","token at login endpoint");
         myEdit.commit();
+    }
+
+    public boolean checkRegisterValidation(){
+        if(!password.matches(re_password)){
+            Toast.makeText(getApplicationContext(),"Both passwords should match!",Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else if(password.length()<8){
+            Toast.makeText(getApplicationContext(),"Length should be greater than 8",Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 
 }

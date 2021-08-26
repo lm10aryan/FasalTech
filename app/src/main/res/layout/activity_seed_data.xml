@@ -8,14 +8,15 @@
     tools:context=".seed_data.SeedDataActivity">
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="650dp"
+        android:layout_above="@id/buttonToProductInfoPage"
+        android:layout_height="match_parent"
         android:id="@+id/seedRecyclerView"/>
 
     <Button
         android:id="@+id/buttonToProductInfoPage"
-        android:layout_width="205dp"
-        android:layout_height="75dp"
-        android:layout_below="@+id/seedRecyclerView"
+        android:layout_width="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="12dp"
