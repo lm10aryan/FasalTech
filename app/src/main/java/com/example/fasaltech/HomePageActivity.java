@@ -48,6 +48,7 @@ public class HomePageActivity extends AppCompatActivity {
     boolean savedLocationInfo=false;
     TextView waterTextView;
     TextView fertTextView;
+    TextView microTextView;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
@@ -66,18 +67,19 @@ public class HomePageActivity extends AppCompatActivity {
         Intent intent=getIntent();
         token=intent.getStringExtra("token");
         if(token.isEmpty()){
-            Log.i("EMpty","token");
+            Log.i("Empty","token");
         }
-        //token="74db454e1cf94292d815cd771ebd878df0c7c46e";
         volleySingleton= VolleySingleton.getInstance(this);
         waterTextView=findViewById(R.id.waterText);
         fertTextView=findViewById(R.id.waterText);
+        microTextView=findViewById(R.id.micronutrientText);
         addTokenInfo(token);
         homePageTextView=findViewById(R.id.homePageTextView);
         homePageTextView.setText("FasalTech Welcomes You!");
         getLocationPoints();
         getWaterInfo();
         getFertiliserInfo();
+        getMicronutrientInfo();
     }
     private void addTokenInfo(String token){
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.fasaltech",MODE_PRIVATE);
@@ -172,21 +174,7 @@ public class HomePageActivity extends AppCompatActivity {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.i("Water Info",response.toString());
-                        for (int i=0;i<response.length();i++) {
-                            try {
-                                JSONObject jsonObject = response.getJSONObject(i);
-                                String message=jsonObject.getString("message")+"- ";
-                                String quantity=jsonObject.getString("quantity")+" ";
-                                String metric=jsonObject.getString("metric");
-                                String waterTextMessage=message+quantity+metric;
-                                waterTextView.setText(waterTextMessage);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                            //Toast.makeText(getApplicationContext(),"Got Water Info",Toast.LENGTH_SHORT).show();
+                        Log.i("Response",response.toString());
                     }
                 },
                 new Response.ErrorListener() {
@@ -215,23 +203,6 @@ public class HomePageActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.i("Fertiliser ",response.toString());
-                        /*for(int i=0;i<response.length();i++){
-                            try {
-                                JSONArray jsonArray=response.getJSONArray("Fertilizer");
-
-                                for(int j=0;j<jsonArray.length();j++){
-                                    JSONArray jsonArray1=jsonArray.getJSONArray(j);
-                                    for()
-                                    Log.i("Fertiliser",jsonArray1.toString());
-                                }
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                         }
-                        */
-
-                        //Toast.makeText(getApplicationContext(),"Fertiliser info received",Toast.LENGTH_SHORT).show();
                     }
                 },
                 new Response.ErrorListener() {
@@ -250,7 +221,34 @@ public class HomePageActivity extends AppCompatActivity {
             }
         };
         volleySingleton.addToRequestQueue(objectRequest);
-
+    }
+    public void getMicronutrientInfo(){
+        JsonObjectRequest objectRequest=new JsonObjectRequest(
+                Request.Method.GET,
+                Api.get_micronutrient_url,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i("Micro",response.toString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("error micronutrient",error.toString());
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", "Token "+token);
+                return headers;
+            }
+        };
+        volleySingleton.addToRequestQueue(objectRequest);
     }
 }
 

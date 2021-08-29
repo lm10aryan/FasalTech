@@ -31,6 +31,13 @@
         android:text="Fertiliser"
         android:layout_below="@+id/waterText"
         android:textSize="25sp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/micronutrientText"
+        android:text="Micronutrient"
+        android:layout_below="@+id/fertText"
+        android:textSize="25sp"/>
 
 
     <LinearLayout
