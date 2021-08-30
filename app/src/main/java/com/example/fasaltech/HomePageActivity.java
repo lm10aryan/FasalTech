@@ -71,7 +71,7 @@ public class HomePageActivity extends AppCompatActivity {
         }
         volleySingleton= VolleySingleton.getInstance(this);
         waterTextView=findViewById(R.id.waterText);
-        fertTextView=findViewById(R.id.waterText);
+        fertTextView=findViewById(R.id.fertText);
         microTextView=findViewById(R.id.micronutrientText);
         addTokenInfo(token);
         homePageTextView=findViewById(R.id.homePageTextView);
@@ -175,6 +175,19 @@ public class HomePageActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.i("Response",response.toString());
+                        for(int i=0;i<response.length();i++){
+                            try {
+                                JSONObject jsonObject=response.getJSONObject(i);
+                                String micro_text=jsonObject.getString("message");
+                                String metric=jsonObject.getString("metric");
+                                String quantity=jsonObject.getString("quantity");
+
+                                waterTextView.setText(micro_text +" "+quantity+" "+metric);
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -195,22 +208,44 @@ public class HomePageActivity extends AppCompatActivity {
         volleySingleton.addToRequestQueue(arrayRequest);
     }
     public void getFertiliserInfo(){
-        JsonObjectRequest objectRequest=new JsonObjectRequest(
+        JsonArrayRequest arrayRequest=new JsonArrayRequest(
                 Request.Method.GET,
                 Api.get_fertiliser_url,
                 null,
-                new Response.Listener<JSONObject>() {
+                new Response.Listener<JSONArray>() {
                     @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i("Fertiliser ",response.toString());
+                    public void onResponse(JSONArray jsonArray) {
+                        Log.i("Fertiliser",jsonArray.toString());
+                        for(int i=0;i<jsonArray.length();i++){
+                            try {
+                                JSONObject jsonObject=jsonArray.getJSONObject(i);
+                                if(jsonObject.get("quantity").equals("")){
+                                    Toast.makeText(getApplicationContext(),"no fert",Toast.LENGTH_SHORT).show();
+                                    fertTextView.setText(jsonObject.getString("fert_name"));
+                                }else{
+                                    String fert_text=jsonObject.getString("fert_name");
+                                    String metric="";
+                                    String quantity=jsonObject.getString("quantity");
+                                    if(jsonObject.getString("metric").equals("0")){
+                                        metric="grams";
+                                    }else{
+                                        metric="ml";
+                                    }
+                                    fertTextView.setText(fert_text +" "+quantity+" "+metric);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.i("Error",error.toString());
+                    public void onErrorResponse(VolleyError volleyError) {
+                        Log.i("Error",volleyError.toString());
                     }
                 }
+
         ){
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -220,23 +255,45 @@ public class HomePageActivity extends AppCompatActivity {
                 return headers;
             }
         };
-        volleySingleton.addToRequestQueue(objectRequest);
+        volleySingleton.addToRequestQueue(arrayRequest);
     }
     public void getMicronutrientInfo(){
-        JsonObjectRequest objectRequest=new JsonObjectRequest(
+        JsonArrayRequest arrayRequest=new JsonArrayRequest(
                 Request.Method.GET,
                 Api.get_micronutrient_url,
                 null,
-                new Response.Listener<JSONObject>() {
+                new Response.Listener<JSONArray>() {
                     @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i("Micro",response.toString());
+                    public void onResponse(JSONArray jsonArray) {
+                        Log.i("Micronutrient",jsonArray.toString());
+                        for(int i=0;i<jsonArray.length();i++){
+                            try {
+                                JSONObject jsonObject=jsonArray.getJSONObject(i);
+                                if(jsonObject.get("quantity").equals("")){
+                                    Toast.makeText(getApplicationContext(),"no micronutrient",Toast.LENGTH_SHORT).show();
+                                    microTextView.setText(jsonObject.getString("fert_name"));
+                                }else{
+                                    String micro_text=jsonObject.getString("fert_name");
+                                    String metric="";
+                                    String quantity=jsonObject.getString("quantity");
+                                    if(jsonObject.getString("metric").equals("0")){
+                                        metric="grams";
+                                    }else{
+                                        metric="ml";
+                                    }
+                                    microTextView.setText(micro_text +" "+quantity+" "+metric);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.i("error micronutrient",error.toString());
+                    public void onErrorResponse(VolleyError volleyError) {
+                        Log.i("Error",volleyError.toString());
                     }
                 }
         ){
@@ -248,7 +305,7 @@ public class HomePageActivity extends AppCompatActivity {
                 return headers;
             }
         };
-        volleySingleton.addToRequestQueue(objectRequest);
+        volleySingleton.addToRequestQueue(arrayRequest);
     }
 }
 

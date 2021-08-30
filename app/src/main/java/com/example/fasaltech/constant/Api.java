@@ -19,5 +19,5 @@ public class Api {
 
     public static final String get_water_url="http://ec2-3-109-139-249.ap-south-1.compute.amazonaws.com:8000/get-water/";
     public static final String get_fertiliser_url="http://ec2-3-109-139-249.ap-south-1.compute.amazonaws.com:8000/get-fert/";
-    public static final String get_micronutrient_url="http://ec2-3-109-139-249.ap-south-1.compute.amazonaws.com:8000/get-fert/";
+    public static final String get_micronutrient_url="http://ec2-3-109-139-249.ap-south-1.compute.amazonaws.com:8000/get-micro/";
 }
