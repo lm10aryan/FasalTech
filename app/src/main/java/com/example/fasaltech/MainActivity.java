@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
         int number=sharedPreferences.getInt("page_no",100);
         String token =sharedPreferences.getString("token","");
         int crop_id=sharedPreferences.getInt("crop_id",0);
-        if(token != null){
+        if(!token.isEmpty()){
             if(number==4){
                 Intent intent=new Intent(MainActivity.this,FarmerDetailActivity.class);
                 intent.putExtra("token",token);
@@ -170,7 +170,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
             else if(number==12){
-
                 Intent intent=new Intent(MainActivity.this,HomePageActivity.class);
                 intent.putExtra("token",token);
                 startActivity(intent);

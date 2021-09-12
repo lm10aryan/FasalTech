@@ -15,6 +15,7 @@ public class Api {
     public static final String post_answers_url="http://ec2-3-109-139-249.ap-south-1.compute.amazonaws.com:8000/farm-answers/";
     public static final String post_location_url="http://ec2-3-109-139-249.ap-south-1.compute.amazonaws.com:8000/add-location/";
 
+    public static final String post_main_info_url="http://ec2-3-109-139-249.ap-south-1.compute.amazonaws.com:8000/save-main/";
     public static final String weather_url="http://ec2-3-109-139-249.ap-south-1.compute.amazonaws.com:8000/daily-weather/";
 
     public static final String get_water_url="http://ec2-3-109-139-249.ap-south-1.compute.amazonaws.com:8000/get-water/";

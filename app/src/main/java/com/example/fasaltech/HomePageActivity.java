@@ -10,6 +10,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -28,6 +29,15 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.fasaltech.constant.Api;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -38,6 +48,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HomePageActivity extends AppCompatActivity {
+    private static final int LOCATION_SETTINGS_REQUEST =4 ;
     String token;
     TextView homePageTextView;
     VolleySingleton volleySingleton;
@@ -76,10 +87,66 @@ public class HomePageActivity extends AppCompatActivity {
         addTokenInfo(token);
         homePageTextView=findViewById(R.id.homePageTextView);
         homePageTextView.setText("FasalTech Welcomes You!");
+        createLocationRequest();
         getLocationPoints();
         getWaterInfo();
         getFertiliserInfo();
         getMicronutrientInfo();
+        addMainUserInfo();
+
+    }
+    protected void createLocationRequest() {
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(5000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+
+        builder.setAlwaysShow(true);
+
+        Task<LocationSettingsResponse> result =
+                LocationServices.getSettingsClient(this).checkLocationSettings(builder.build());
+
+        result.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
+
+
+            @Override
+            public void onComplete(Task<LocationSettingsResponse> task) {
+                try {
+                    LocationSettingsResponse response = task.getResult(ApiException.class);
+                    // All location settings are satisfied. The client can initialize location
+                    // requests here.
+
+                } catch (ApiException exception) {
+                    switch (exception.getStatusCode()) {
+                        case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                            // Location settings are not satisfied. But could be fixed by showing the
+                            // user a dialog.
+                            try {
+                                // Cast to a resolvable exception.
+                                ResolvableApiException resolvable = (ResolvableApiException) exception;
+                                // Show the dialog by calling startResolutionForResult(),
+                                // and check the result in onActivityResult().
+                                resolvable.startResolutionForResult(
+                                        HomePageActivity.this,
+                                        LOCATION_SETTINGS_REQUEST);
+                            } catch (IntentSender.SendIntentException e) {
+                                // Ignore the error.
+                            } catch (ClassCastException e) {
+                                // Ignore, should be an impossible error.
+                            }
+                            break;
+                        case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                            // Location settings are not satisfied. However, we have no way to fix the
+                            // settings so we won't show the dialog.
+                            break;
+                    }
+                }
+            }
+        });
     }
     private void addTokenInfo(String token){
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.fasaltech",MODE_PRIVATE);
@@ -92,11 +159,11 @@ public class HomePageActivity extends AppCompatActivity {
     public void getLocationPoints(){
         locationManager=(LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         locationListener=new LocationListener() {
-
             @Override
             public void onLocationChanged(Location location) {
                 latitude=String.valueOf(location.getLatitude());
                 longitude=String.valueOf(location.getLongitude());
+                Log.i("Latitude",latitude);
             }
 
             @Override
@@ -116,6 +183,7 @@ public class HomePageActivity extends AppCompatActivity {
         };
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
+
         }else {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
         }
@@ -157,6 +225,7 @@ public class HomePageActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Toast.makeText(getApplicationContext(),"great job",Toast.LENGTH_SHORT).show();
+                        addLocationInfo();
 
                     }
                 })
@@ -307,6 +376,77 @@ public class HomePageActivity extends AppCompatActivity {
         };
         volleySingleton.addToRequestQueue(arrayRequest);
     }
+    public void addLocationInfo(){
+        JSONObject locationDetailsObject=new JSONObject();
+        try {
+            Double latitude_number=Double.parseDouble(latitude);
+            Double longitude_number=Double.parseDouble(longitude);
+
+
+            locationDetailsObject.put("latitude",String.format("%.2f",latitude_number));
+            locationDetailsObject.put("longitude",String.format("%.2f",longitude_number));
+            Log.i("Details",locationDetailsObject.toString());
+            JsonObjectRequest objectRequest=new JsonObjectRequest(
+                    Request.Method.POST,
+                    Api.post_location_url,
+                    locationDetailsObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Toast.makeText(getApplicationContext(),"Added location Info",Toast.LENGTH_SHORT).show();
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            //Log.i("Location Posting error",error.toString());
+                            Log.i("Error",error.getLocalizedMessage());
+                        }
+                    }
+            ){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Content-Type", "application/json");
+                    headers.put("Authorization", "Token "+token);
+                    return headers;
+                }
+            };
+            volleySingleton.addToRequestQueue(objectRequest);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addMainUserInfo(){
+        JsonObjectRequest objectRequest=new JsonObjectRequest(
+                Request.Method.POST,
+                Api.post_main_info_url,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Toast.makeText(getApplicationContext(),"Main Info added",Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("error at main info",error.getLocalizedMessage());
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", "Token "+token);
+                return headers;
+            }
+        };
+        volleySingleton.addToRequestQueue(objectRequest);
+    }
+
 }
 
 
